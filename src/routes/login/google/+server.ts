@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 	const google = createGoogleClient(url.origin);
 	const authUrl = google.createAuthorizationURL(state, codeVerifier, ['openid', 'profile', 'email']);
 
-	const isProduction = url.origin.includes('workers.dev');
+	const isProduction = url.origin.includes('workers.dev') || url.origin.includes('oritual.work');
 
 	cookies.set('google_oauth_state', state, {
 		path: '/',

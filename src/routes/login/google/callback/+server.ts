@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
 
 		// Criar sessão (usando cookie simples por enquanto)
 		const sessionToken = generateSessionToken();
-		const isProduction = url.origin.includes('workers.dev');
+		const isProduction = url.origin.includes('workers.dev') || url.origin.includes('oritual.work');
 
 		cookies.set('session', `${userId}:${sessionToken}`, {
 			path: '/',
