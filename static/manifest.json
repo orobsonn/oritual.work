@@ -1,0 +1,17 @@
+{
+	"name": "Ontrack",
+	"short_name": "Ontrack",
+	"description": "Seu ritual diário de produtividade",
+	"start_url": "/app",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#1a1a1a",
+	"orientation": "portrait",
+	"icons": [
+		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml"
+		}
+	]
+}

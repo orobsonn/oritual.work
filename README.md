@@ -1,38 +1,68 @@
-# sv
+# Ontrack
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+App de produtividade pessoal focado em **rotina diária como ritual** + **acompanhamento de metas**.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Frontend:** SvelteKit + PWA
+- **Backend:** Cloudflare Workers
+- **Banco de dados:** Cloudflare D1 (SQLite)
+- **ORM:** Drizzle
+- **Autenticação:** Google OAuth
 
-```sh
-# create a new project in the current directory
-npx sv create
+## Funcionalidades
 
-# create a new project in my-app
-npx sv create my-app
-```
+### Gratuito
+- **Diário diário** - Gratidão, intenção, tarefas, reflexão
+- **Hábitos** - Semanais e mensais com tracking
+- **Metas** - Progresso com histórico
+- **Afirmação diária** - Frase motivacional no ritual matinal
 
-## Developing
+### Premium (R$ 47)
+- **Metas de casal** - Compartilhe objetivos com seu parceiro(a)
+- **Hábitos de casal** - Acompanhem juntos
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Desenvolvimento
 
-```sh
+```bash
+# Instalar dependências
+npm install
+
+# Rodar localmente
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Aplicar migrations no D1 local
+wrangler d1 migrations apply ontrack-db --local
+
+# Deploy
+npm run deploy
 ```
 
-## Building
+## Variáveis de Ambiente
 
-To create a production version of your app:
+Criar arquivo `.env`:
 
-```sh
-npm run build
+```
+GOOGLE_CLIENT_ID=seu_client_id
+GOOGLE_CLIENT_SECRET=seu_client_secret
 ```
 
-You can preview the production build with `npm run preview`.
+## Estrutura
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```
+src/
+├── routes/
+│   ├── app/           # Área autenticada
+│   │   ├── today/     # Diário do dia
+│   │   ├── goals/     # Metas pessoais
+│   │   ├── habits/    # Hábitos
+│   │   ├── couple/    # Área do casal (premium)
+│   │   └── settings/  # Configurações
+│   ├── login/         # Autenticação
+│   └── onboarding/    # Setup inicial
+├── lib/
+│   └── server/
+│       ├── auth.ts    # Google OAuth
+│       └── db/        # Schema Drizzle
+└── hooks.server.ts    # Middleware de auth
+```
