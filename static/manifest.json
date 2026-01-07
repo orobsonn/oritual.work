@@ -1,6 +1,6 @@
 {
-	"name": "Ontrack",
-	"short_name": "Ontrack",
+	"name": "Rumo",
+	"short_name": "Rumo",
 	"description": "Seu ritual diário de produtividade",
 	"start_url": "/app",
 	"display": "standalone",

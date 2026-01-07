@@ -6,10 +6,45 @@
 	let showGoalForm = $state(false);
 	let showHabitForm = $state(false);
 	let inviteCode = $state('');
+	let habitFrequencyType = $state<'weekly' | 'monthly'>('monthly');
+	let selectedDays = $state<string[]>([]);
+
+	function toggleDay(day: string) {
+		if (selectedDays.includes(day)) {
+			selectedDays = selectedDays.filter((d) => d !== day);
+		} else {
+			selectedDays = [...selectedDays, day];
+		}
+	}
+
+	function resetHabitForm() {
+		showHabitForm = false;
+		habitFrequencyType = 'monthly';
+		selectedDays = [];
+	}
+
+	const weekDays = [
+		{ value: 'mon', label: 'Seg' },
+		{ value: 'tue', label: 'Ter' },
+		{ value: 'wed', label: 'Qua' },
+		{ value: 'thu', label: 'Qui' },
+		{ value: 'fri', label: 'Sex' },
+		{ value: 'sat', label: 'Sáb' },
+		{ value: 'sun', label: 'Dom' }
+	];
+
+	function formatDays(targetDays: string | null): string {
+		if (!targetDays) return '';
+		const days = JSON.parse(targetDays) as string[];
+		return days
+			.map((d) => weekDays.find((w) => w.value === d)?.label)
+			.filter(Boolean)
+			.join(', ');
+	}
 </script>
 
 <svelte:head>
-	<title>Casal - Ontrack</title>
+	<title>Casal - Rumo</title>
 </svelte:head>
 
 <main>
@@ -127,23 +162,51 @@
 
 			{#if showHabitForm}
 				<form
-					class="inline-form"
+					class="habit-form"
 					method="POST"
 					action="?/createHabit"
 					use:enhance={() => {
 						return async ({ update }) => {
 							await update();
-							showHabitForm = false;
+							resetHabitForm();
 						};
 					}}
 				>
 					<input type="text" name="title" placeholder="Ex: Jantar romântico" required />
-					<select name="frequencyType">
-						<option value="monthly">Mensal</option>
-						<option value="weekly">Semanal</option>
-					</select>
-					<input type="number" name="frequencyValue" value="1" min="1" />
-					<button type="submit">Criar</button>
+
+					<div class="form-row">
+						<select name="frequencyType" bind:value={habitFrequencyType}>
+							<option value="monthly">Mensal</option>
+							<option value="weekly">Semanal</option>
+						</select>
+
+						{#if habitFrequencyType === 'monthly'}
+							<input type="number" name="frequencyValue" value="1" min="1" />
+							<span class="freq-label">x/mês</span>
+						{/if}
+					</div>
+
+					{#if habitFrequencyType === 'weekly'}
+						<div class="days-selection">
+							<p class="days-label">Em quais dias?</p>
+							<div class="days-grid">
+								{#each weekDays as day}
+									<button
+										type="button"
+										class="day-chip"
+										class:selected={selectedDays.includes(day.value)}
+										onclick={() => toggleDay(day.value)}
+									>
+										{day.label}
+									</button>
+								{/each}
+							</div>
+							<input type="hidden" name="targetDays" value={JSON.stringify(selectedDays)} />
+							<input type="hidden" name="frequencyValue" value="0" />
+						</div>
+					{/if}
+
+					<button type="submit" class="submit-btn">Criar</button>
 				</form>
 			{/if}
 
@@ -164,10 +227,16 @@
 									{habit.completedToday ? '✓' : '○'}
 								</button>
 							</form>
-							<span>{habit.title}</span>
-							<span class="freq">
-								{habit.frequencyValue}x/{habit.frequencyType === 'weekly' ? 'sem' : 'mês'}
-							</span>
+							<div class="habit-info">
+								<span class="habit-title">{habit.title}</span>
+								<span class="habit-meta">
+									{#if habit.frequencyType === 'weekly' && habit.targetDays}
+										{formatDays(habit.targetDays)}
+									{:else}
+										{habit.frequencyValue}x/{habit.frequencyType === 'weekly' ? 'sem' : 'mês'}
+									{/if}
+								</span>
+							</div>
 						</li>
 					{/each}
 				</ul>
@@ -181,48 +250,65 @@
 		max-width: 600px;
 		margin: 0 auto;
 		padding: 1rem;
-		font-family: system-ui, -apple-system, sans-serif;
+		padding-top: 4rem;
 	}
 
 	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: rgba(13, 27, 42, 0.85);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		z-index: 100;
+		max-width: 600px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #333;
+		color: #88c0d0;
 	}
 
 	h1 {
 		font-size: 1.25rem;
 		margin: 0;
+		color: #e0e0e0;
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0;
-		color: #666;
+		color: #88c0d0;
 	}
 
 	/* Connect Section */
 	.connect-section {
 		text-align: center;
 		padding: 2rem;
-		background: #fafafa;
+		background: #1b2838;
 		border-radius: 8px;
 	}
 
 	.connect-section h2 {
 		margin-bottom: 1.5rem;
-		color: #333;
+		color: #e0e0e0;
 	}
 
 	.invite-code {
 		margin-bottom: 1.5rem;
+	}
+
+	.invite-code p {
+		color: #8899a6;
 	}
 
 	.code {
@@ -230,27 +316,32 @@
 		font-size: 2rem;
 		letter-spacing: 0.25em;
 		margin: 0.5rem 0;
-		color: #333;
+		color: #88c0d0;
 	}
 
 	.hint {
 		font-size: 0.875rem;
-		color: #999;
+		color: #5a6a7a;
 	}
 
 	.generate-btn {
 		padding: 0.75rem 1.5rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
 		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	.generate-btn:hover {
+		background: #9dd0e0;
 	}
 
 	.divider {
 		margin: 1.5rem 0;
-		color: #999;
+		color: #5a6a7a;
 		font-size: 0.875rem;
 	}
 
@@ -262,27 +353,36 @@
 
 	.use-invite input {
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		font-size: 1rem;
 		text-transform: uppercase;
 		width: 120px;
 		text-align: center;
 		letter-spacing: 0.1em;
+		color: #e0e0e0;
+	}
+
+	.use-invite input:focus {
+		outline: none;
+		border-color: #88c0d0;
 	}
 
 	.use-invite button {
 		padding: 0.5rem 1rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	/* Partner Section */
 	.partner-section {
-		background: #f0fdf4;
+		background: #1b3830;
+		border: 1px solid #2d5a4e;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1.5rem;
@@ -295,12 +395,16 @@
 	}
 
 	.partner-label {
-		color: #666;
+		color: #8899a6;
+	}
+
+	.partner-info strong {
+		color: #98c379;
 	}
 
 	/* Sections */
 	.section {
-		background: #fafafa;
+		background: #1b2838;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -314,14 +418,15 @@
 	}
 
 	.add-btn {
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		width: 28px;
 		height: 28px;
 		border-radius: 50%;
 		font-size: 1rem;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	.inline-form {
@@ -335,30 +440,132 @@
 		flex: 1;
 		min-width: 150px;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
+		color: #e0e0e0;
 	}
 
 	.inline-form input[type='number'] {
 		width: 60px;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
+		color: #e0e0e0;
 	}
 
 	.inline-form select {
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
+		color: #e0e0e0;
 	}
 
 	.inline-form button {
 		padding: 0.5rem 1rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
+		font-weight: 600;
+	}
+
+	/* Habit form with days selection */
+	.habit-form {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.habit-form input[type='text'] {
+		padding: 0.5rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		color: #e0e0e0;
+	}
+
+	.form-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.form-row select {
+		padding: 0.5rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		color: #e0e0e0;
+	}
+
+	.form-row input[type='number'] {
+		width: 60px;
+		padding: 0.5rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		color: #e0e0e0;
+	}
+
+	.freq-label {
+		font-size: 0.875rem;
+		color: #8899a6;
+	}
+
+	.days-selection {
+		margin-top: 0.25rem;
+	}
+
+	.days-label {
+		font-size: 0.875rem;
+		color: #8899a6;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.days-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.day-chip {
+		padding: 0.4rem 0.6rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 16px;
+		font-size: 0.8rem;
+		cursor: pointer;
+		transition: all 0.2s;
+		color: #8899a6;
+	}
+
+	.day-chip:hover {
+		border-color: #88c0d0;
+	}
+
+	.day-chip.selected {
+		background: #88c0d0;
+		color: #0d1b2a;
+		border-color: #88c0d0;
+	}
+
+	.habit-form .submit-btn {
+		padding: 0.5rem 1rem;
+		background: #88c0d0;
+		color: #0d1b2a;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 600;
+	}
+
+	.habit-form .submit-btn:hover {
+		background: #9dd0e0;
 	}
 
 	ul {
@@ -369,11 +576,15 @@
 
 	.goals-list li {
 		padding: 0.75rem 0;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid #2d4a5e;
 	}
 
 	.goals-list li:last-child {
 		border-bottom: none;
+	}
+
+	.goals-list li strong {
+		color: #e0e0e0;
 	}
 
 	.mini-progress {
@@ -386,19 +597,19 @@
 	.mini-bar {
 		flex: 1;
 		height: 4px;
-		background: #e0e0e0;
+		background: #0d1b2a;
 		border-radius: 2px;
 		overflow: hidden;
 	}
 
 	.mini-fill {
 		height: 100%;
-		background: #333;
+		background: #88c0d0;
 	}
 
 	.mini-progress span {
 		font-size: 0.75rem;
-		color: #999;
+		color: #8899a6;
 	}
 
 	.habits-list li {
@@ -406,16 +617,16 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.5rem 0;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid #2d4a5e;
 	}
 
 	.habits-list li:last-child {
 		border-bottom: none;
 	}
 
-	.habits-list li.completed span {
+	.habits-list li.completed .habit-title {
 		text-decoration: line-through;
-		color: #999;
+		color: #5a6a7a;
 	}
 
 	.checkbox {
@@ -424,20 +635,26 @@
 		font-size: 1.25rem;
 		cursor: pointer;
 		padding: 0;
+		color: #88c0d0;
 	}
 
-	.habits-list li span {
+	.habit-info {
 		flex: 1;
+		display: flex;
+		flex-direction: column;
 	}
 
-	.freq {
+	.habit-title {
+		color: #e0e0e0;
+	}
+
+	.habit-meta {
 		font-size: 0.75rem;
-		color: #999;
-		flex: none !important;
+		color: #5a6a7a;
 	}
 
 	.empty {
-		color: #999;
+		color: #5a6a7a;
 		font-size: 0.875rem;
 		text-align: center;
 		padding: 1rem;

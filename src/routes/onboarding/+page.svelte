@@ -3,23 +3,52 @@
 
 	let { data, form } = $props();
 
-	let step = $state(form?.step ?? 1);
+	let step = $state(1);
 	let affirmation = $state('');
-	let habits = $state(['', '', '']);
+
+	$effect(() => {
+		if (form?.step) {
+			step = form.step;
+		}
+	});
+	let habits = $state([
+		{ title: '', days: [] as string[] },
+		{ title: '', days: [] as string[] }
+	]);
 	let goals = $state([{ title: '', target: 12 }]);
 	let hasPartner = $state<boolean | null>(null);
 
+	const weekDays = [
+		{ value: 'mon', label: 'Seg' },
+		{ value: 'tue', label: 'Ter' },
+		{ value: 'wed', label: 'Qua' },
+		{ value: 'thu', label: 'Qui' },
+		{ value: 'fri', label: 'Sex' },
+		{ value: 'sat', label: 'Sáb' },
+		{ value: 'sun', label: 'Dom' }
+	];
+
 	function addHabit() {
-		habits = [...habits, ''];
+		habits = [...habits, { title: '', days: [] }];
 	}
 
 	function addGoal() {
 		goals = [...goals, { title: '', target: 1 }];
 	}
+
+	function toggleDay(habitIndex: number, day: string) {
+		const habit = habits[habitIndex];
+		if (habit.days.includes(day)) {
+			habit.days = habit.days.filter(d => d !== day);
+		} else {
+			habit.days = [...habit.days, day];
+		}
+		habits = [...habits];
+	}
 </script>
 
 <svelte:head>
-	<title>Bem-vindo ao Ontrack</title>
+	<title>Bem-vindo ao Rumo</title>
 </svelte:head>
 
 <main>
@@ -62,7 +91,7 @@
 		<section class="step">
 			<h1>Seus hábitos</h1>
 			<p class="subtitle">
-				Quais hábitos você quer cultivar? Começaremos com 3x por semana.
+				Quais hábitos você quer cultivar? Selecione os dias de prática.
 			</p>
 
 			<form method="POST" action="?/saveHabits" use:enhance={() => {
@@ -73,12 +102,27 @@
 				};
 			}}>
 				{#each habits as habit, i}
-					<input
-						type="text"
-						name="habits"
-						placeholder="Ex: Meditar, Exercitar, Ler..."
-						bind:value={habits[i]}
-					/>
+					<div class="habit-block">
+						<input
+							type="text"
+							name="habits"
+							placeholder="Ex: Meditar, Exercitar, Ler..."
+							bind:value={habits[i].title}
+						/>
+						<div class="days-grid">
+							{#each weekDays as day}
+								<button
+									type="button"
+									class="day-chip"
+									class:selected={habits[i].days.includes(day.value)}
+									onclick={() => toggleDay(i, day.value)}
+								>
+									{day.label}
+								</button>
+							{/each}
+						</div>
+						<input type="hidden" name="habitDays" value={JSON.stringify(habits[i].days)} />
+					</div>
 				{/each}
 
 				<button type="button" class="add-more" onclick={addHabit}>
@@ -190,7 +234,7 @@
 					<input type="hidden" name="hasPartner" value="false" />
 					<input type="hidden" name="wantsPremium" value="false" />
 					<button type="submit" class="primary">
-						Começar a usar o Ontrack
+						Começar a usar o Rumo
 					</button>
 				</form>
 			{/if}
@@ -207,7 +251,6 @@
 		max-width: 500px;
 		margin: 0 auto;
 		padding: 2rem 1rem;
-		font-family: system-ui, -apple-system, sans-serif;
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
@@ -224,12 +267,12 @@
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background: #e0e0e0;
+		background: #2d4a5e;
 		transition: background 0.3s;
 	}
 
 	.dot.active {
-		background: #333;
+		background: #88c0d0;
 	}
 
 	.step {
@@ -240,10 +283,11 @@
 		font-size: 1.5rem;
 		margin: 0 0 0.5rem 0;
 		text-align: center;
+		color: #e0e0e0;
 	}
 
 	.subtitle {
-		color: #666;
+		color: #8899a6;
 		text-align: center;
 		margin: 0 0 2rem 0;
 	}
@@ -258,11 +302,20 @@
 	input[type='text'] {
 		width: 100%;
 		padding: 0.75rem;
-		border: 1px solid #ddd;
+		background: #1b2838;
+		border: 1px solid #2d4a5e;
 		border-radius: 8px;
 		font-size: 1rem;
 		font-family: inherit;
 		box-sizing: border-box;
+		color: #e0e0e0;
+	}
+
+	textarea:focus,
+	input[type='text']:focus,
+	input[type='number']:focus {
+		outline: none;
+		border-color: #88c0d0;
 	}
 
 	textarea {
@@ -273,10 +326,12 @@
 	input[type='number'] {
 		width: 80px;
 		padding: 0.75rem;
-		border: 1px solid #ddd;
+		background: #1b2838;
+		border: 1px solid #2d4a5e;
 		border-radius: 8px;
 		font-size: 1rem;
 		text-align: center;
+		color: #e0e0e0;
 	}
 
 	.goal-row {
@@ -291,14 +346,14 @@
 	.add-more {
 		background: none;
 		border: none;
-		color: #666;
+		color: #8899a6;
 		cursor: pointer;
 		font-size: 0.875rem;
 		padding: 0.5rem;
 	}
 
 	.add-more:hover {
-		color: #333;
+		color: #88c0d0;
 	}
 
 	.actions {
@@ -308,16 +363,17 @@
 	button.primary {
 		width: 100%;
 		padding: 1rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 8px;
 		font-size: 1rem;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	button.primary:hover {
-		background: #444;
+		background: #9dd0e0;
 	}
 
 	/* Partner question */
@@ -327,6 +383,7 @@
 
 	.partner-question p {
 		margin-bottom: 1rem;
+		color: #e0e0e0;
 	}
 
 	.partner-options {
@@ -337,43 +394,48 @@
 	.option {
 		flex: 1;
 		padding: 1rem;
-		background: #f9f9f9;
-		border: 1px solid #eee;
+		background: #1b2838;
+		border: 1px solid #2d4a5e;
 		border-radius: 8px;
 		cursor: pointer;
 		font-size: 1rem;
+		color: #e0e0e0;
 	}
 
 	.option:hover {
-		background: #f0f0f0;
+		background: #243447;
+		border-color: #88c0d0;
 	}
 
 	/* Premium offer */
 	.premium-offer {
 		text-align: center;
-		background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+		background: linear-gradient(135deg, #2d4a3e 0%, #1b3830 100%);
 		padding: 2rem;
 		border-radius: 12px;
 		margin-top: 1rem;
+		border: 1px solid #3d6a5e;
 	}
 
 	.offer-badge {
 		display: inline-block;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		font-size: 0.75rem;
 		padding: 0.25rem 0.75rem;
 		border-radius: 20px;
 		margin-bottom: 1rem;
+		font-weight: 600;
 	}
 
 	.premium-offer h2 {
 		margin: 0 0 0.5rem 0;
 		font-size: 1.25rem;
+		color: #e0e0e0;
 	}
 
 	.premium-offer > p {
-		color: #666;
+		color: #8899a6;
 		margin: 0 0 1.5rem 0;
 	}
 
@@ -387,14 +449,14 @@
 
 	.old-price {
 		text-decoration: line-through;
-		color: #999;
+		color: #5a6a7a;
 		font-size: 1rem;
 	}
 
 	.new-price {
 		font-size: 2rem;
 		font-weight: bold;
-		color: #333;
+		color: #98c379;
 	}
 
 	.discount {
@@ -407,22 +469,27 @@
 
 	.once {
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 		margin-bottom: 1.5rem;
 	}
 
 	.premium-btn {
-		background: #333 !important;
+		background: #98c379 !important;
+		color: #0d1b2a !important;
 	}
 
 	.skip-link {
 		background: none;
 		border: none;
-		color: #666;
+		color: #8899a6;
 		cursor: pointer;
 		font-size: 0.875rem;
 		margin-top: 1rem;
 		width: 100%;
+	}
+
+	.skip-link:hover {
+		color: #88c0d0;
 	}
 
 	/* Skip form */
@@ -434,13 +501,52 @@
 	.skip {
 		background: none;
 		border: none;
-		color: #999;
+		color: #5a6a7a;
 		cursor: pointer;
 		font-size: 0.875rem;
 		width: 100%;
 	}
 
 	.skip:hover {
-		color: #666;
+		color: #8899a6;
+	}
+
+	/* Habit block */
+	.habit-block {
+		background: #1b2838;
+		padding: 1rem;
+		border-radius: 8px;
+		margin-bottom: 0.5rem;
+	}
+
+	.habit-block input[type='text'] {
+		margin-bottom: 0.75rem;
+	}
+
+	.days-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.day-chip {
+		padding: 0.4rem 0.6rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 16px;
+		font-size: 0.8rem;
+		cursor: pointer;
+		transition: all 0.2s;
+		color: #8899a6;
+	}
+
+	.day-chip:hover {
+		border-color: #88c0d0;
+	}
+
+	.day-chip.selected {
+		background: #88c0d0;
+		color: #0d1b2a;
+		border-color: #88c0d0;
 	}
 </style>

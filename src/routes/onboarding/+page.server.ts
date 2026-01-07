@@ -22,16 +22,21 @@ export const actions: Actions = {
 	saveHabits: async ({ request, locals }) => {
 		const formData = await request.formData();
 		const habitsData = formData.getAll('habits') as string[];
+		const habitDaysData = formData.getAll('habitDays') as string[];
 
-		for (const title of habitsData) {
-			if (title.trim()) {
+		for (let i = 0; i < habitsData.length; i++) {
+			const title = habitsData[i];
+			const daysJson = habitDaysData[i] || '[]';
+			const days = JSON.parse(daysJson) as string[];
+
+			if (title.trim() && days.length > 0) {
 				await locals.db.insert(habits).values({
 					id: generateId(),
 					userId: locals.user!.id,
 					title: title.trim(),
 					frequencyType: 'weekly',
-					frequencyValue: 3,
-					targetDays: JSON.stringify(['mon', 'wed', 'fri'])
+					frequencyValue: days.length,
+					targetDays: JSON.stringify(days)
 				});
 			}
 		}

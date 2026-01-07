@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<title>Hábitos - Ontrack</title>
+	<title>Hábitos - Rumo</title>
 </svelte:head>
 
 <main>
@@ -66,26 +66,28 @@
 
 			{#if frequencyType === 'weekly'}
 				<div class="field">
-					<label>Dias da semana</label>
+					<label>Em quais dias você quer praticar?</label>
 					<div class="days-grid">
 						{#each weekDays as day}
-							<label class="day-checkbox">
+							<label class="day-chip">
 								<input type="checkbox" name="targetDays" value={day.value} />
 								<span>{day.label}</span>
 							</label>
 						{/each}
 					</div>
-				</div>
-
-				<div class="field">
-					<label for="frequencyValue">Vezes por semana</label>
-					<input type="number" id="frequencyValue" name="frequencyValue" value="3" min="1" max="7" />
+					<p class="hint">Selecione os dias específicos da semana</p>
 				</div>
 			{:else}
 				<div class="field">
-					<label for="frequencyValue">Vezes por mês</label>
+					<label for="frequencyValue">Quantas vezes por mês?</label>
 					<input type="number" id="frequencyValue" name="frequencyValue" value="1" min="1" max="31" />
+					<p class="hint">Ex: 1x/mês para "jantar fora", 4x/mês para "ligar para os pais"</p>
 				</div>
+			{/if}
+
+			<!-- Campo oculto para frequencyValue quando weekly -->
+			{#if frequencyType === 'weekly'}
+				<input type="hidden" name="frequencyValue" value="0" />
 			{/if}
 
 			<button type="submit" class="submit-btn">Criar hábito</button>
@@ -103,7 +105,7 @@
 							<strong>{habit.title}</strong>
 							<span class="meta">
 								{#if habit.frequencyType === 'weekly'}
-									{formatDays(habit.targetDays)} ({habit.frequencyValue}x/semana)
+									{formatDays(habit.targetDays)}
 								{:else}
 									{habit.frequencyValue}x/mês
 								{/if}
@@ -113,7 +115,7 @@
 							<form method="POST" action="?/toggle" use:enhance>
 								<input type="hidden" name="habitId" value={habit.id} />
 								<input type="hidden" name="active" value={habit.active === 1 ? 'false' : 'true'} />
-								<button type="submit" class="toggle-btn" title={habit.active === 1 ? 'Pausar' : 'Ativar'}>
+								<button type="submit" class="toggle-btn" class:pause={habit.active === 1} class:play={habit.active === 0} title={habit.active === 1 ? 'Pausar' : 'Ativar'}>
 									{habit.active === 1 ? '⏸' : '▶'}
 								</button>
 							</form>
@@ -134,41 +136,55 @@
 		max-width: 600px;
 		margin: 0 auto;
 		padding: 1rem;
-		font-family: system-ui, -apple-system, sans-serif;
+		padding-top: 4rem;
 	}
 
 	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: rgba(13, 27, 42, 0.85);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		z-index: 100;
+		max-width: 600px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #333;
+		color: #88c0d0;
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
+		color: #e0e0e0;
 	}
 
 	.add-btn {
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		width: 32px;
 		height: 32px;
 		border-radius: 50%;
 		font-size: 1.25rem;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	.create-form {
-		background: #fafafa;
+		background: #1b2838;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1.5rem;
@@ -181,7 +197,7 @@
 	.field label {
 		display: block;
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 		margin-bottom: 0.25rem;
 	}
 
@@ -190,10 +206,12 @@
 	.field select {
 		width: 100%;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		font-size: 1rem;
 		box-sizing: border-box;
+		color: #e0e0e0;
 	}
 
 	.days-grid {
@@ -202,27 +220,51 @@
 		gap: 0.5rem;
 	}
 
-	.day-checkbox {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		font-size: 0.875rem;
+	.day-chip {
 		cursor: pointer;
 	}
 
-	.day-checkbox input {
-		width: auto;
+	.day-chip input {
+		display: none;
+	}
+
+	.day-chip span {
+		display: block;
+		padding: 0.5rem 0.75rem;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
+		border-radius: 20px;
+		font-size: 0.875rem;
+		transition: all 0.2s;
+		color: #8899a6;
+	}
+
+	.day-chip input:checked + span {
+		background: #88c0d0;
+		color: #0d1b2a;
+		border-color: #88c0d0;
+	}
+
+	.hint {
+		font-size: 0.75rem;
+		color: #5a6a7a;
+		margin: 0.25rem 0 0 0;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 0.75rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		font-size: 1rem;
 		cursor: pointer;
+		font-weight: 600;
+	}
+
+	.submit-btn:hover {
+		background: #9dd0e0;
 	}
 
 	ul {
@@ -236,7 +278,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 1rem;
-		background: #fafafa;
+		background: #1b2838;
 		border-radius: 8px;
 		margin-bottom: 0.5rem;
 	}
@@ -248,11 +290,12 @@
 	.habit-info strong {
 		display: block;
 		margin-bottom: 0.25rem;
+		color: #e0e0e0;
 	}
 
 	.meta {
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 	}
 
 	.habit-actions {
@@ -269,17 +312,33 @@
 		padding: 0.25rem;
 	}
 
+	.toggle-btn.pause {
+		color: #e8a87c;
+	}
+
+	.toggle-btn.pause:hover {
+		color: #e06c75;
+	}
+
+	.toggle-btn.play {
+		color: #6ab074;
+	}
+
+	.toggle-btn.play:hover {
+		color: #98c379;
+	}
+
 	.delete-btn {
-		color: #ccc;
+		color: #5a6a7a;
 	}
 
 	.delete-btn:hover {
-		color: #f00;
+		color: #e06c75;
 	}
 
 	.empty {
 		text-align: center;
-		color: #999;
+		color: #5a6a7a;
 		padding: 2rem;
 	}
 </style>

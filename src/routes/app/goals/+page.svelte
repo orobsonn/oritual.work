@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Metas - Ontrack</title>
+	<title>Metas - Rumo</title>
 </svelte:head>
 
 <main>
@@ -33,13 +33,17 @@
 			}}
 		>
 			<div class="field">
-				<label for="title">Nome da meta</label>
-				<input type="text" id="title" name="title" placeholder="Ex: Ler 12 livros" required />
+				<label for="title">O que você quer conquistar?</label>
+				<input type="text" id="title" name="title" placeholder="Ex: Ler livros, Correr km, Economizar R$..." required />
 			</div>
 
 			<div class="field">
-				<label for="targetValue">Objetivo</label>
-				<input type="number" id="targetValue" name="targetValue" value="12" min="1" required />
+				<label for="targetValue">Qual o objetivo?</label>
+				<div class="target-input">
+					<input type="number" id="targetValue" name="targetValue" value="12" min="1" required />
+					<span class="target-hint">unidades</span>
+				</div>
+				<p class="hint">Ex: 12 livros, 100 km, 5000 reais</p>
 			</div>
 
 			<button type="submit" class="submit-btn">Criar meta</button>
@@ -116,41 +120,55 @@
 		max-width: 600px;
 		margin: 0 auto;
 		padding: 1rem;
-		font-family: system-ui, -apple-system, sans-serif;
+		padding-top: 4rem;
 	}
 
 	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: rgba(13, 27, 42, 0.85);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		z-index: 100;
+		max-width: 600px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #333;
+		color: #88c0d0;
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
+		color: #e0e0e0;
 	}
 
 	.add-btn {
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		width: 32px;
 		height: 32px;
 		border-radius: 50%;
 		font-size: 1.25rem;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	.create-form {
-		background: #fafafa;
+		background: #1b2838;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1.5rem;
@@ -163,32 +181,61 @@
 	.field label {
 		display: block;
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 		margin-bottom: 0.25rem;
 	}
 
 	.field input {
 		width: 100%;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		font-size: 1rem;
 		box-sizing: border-box;
+		color: #e0e0e0;
+	}
+
+	.target-input {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.target-input input {
+		width: 100px;
+		flex: none;
+	}
+
+	.target-hint {
+		color: #5a6a7a;
+		font-size: 0.875rem;
+	}
+
+	.hint {
+		font-size: 0.75rem;
+		color: #5a6a7a;
+		margin: 0.25rem 0 0 0;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 0.75rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		font-size: 1rem;
 		cursor: pointer;
+		font-weight: 600;
+	}
+
+	.submit-btn:hover {
+		background: #9dd0e0;
 	}
 
 	.goal-card {
-		background: #fafafa;
+		background: #1b2838;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -203,18 +250,19 @@
 
 	.goal-header strong {
 		font-size: 1rem;
+		color: #e0e0e0;
 	}
 
 	.delete-btn {
 		background: none;
 		border: none;
 		font-size: 1.25rem;
-		color: #ccc;
+		color: #5a6a7a;
 		cursor: pointer;
 	}
 
 	.delete-btn:hover {
-		color: #f00;
+		color: #e06c75;
 	}
 
 	.progress-container {
@@ -223,7 +271,7 @@
 
 	.progress-bar {
 		height: 8px;
-		background: #e0e0e0;
+		background: #0d1b2a;
 		border-radius: 4px;
 		overflow: hidden;
 		margin-bottom: 0.25rem;
@@ -231,27 +279,27 @@
 
 	.progress-fill {
 		height: 100%;
-		background: #333;
+		background: #88c0d0;
 		transition: width 0.3s ease;
 	}
 
 	.progress-text {
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 	}
 
 	.edit-progress-btn {
 		width: 100%;
 		padding: 0.5rem;
 		background: none;
-		border: 1px solid #ddd;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		cursor: pointer;
-		color: #666;
+		color: #8899a6;
 	}
 
 	.edit-progress-btn:hover {
-		background: #fff;
+		background: #0d1b2a;
 	}
 
 	.update-form {
@@ -267,38 +315,44 @@
 	.value-input {
 		width: 80px;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
+		color: #e0e0e0;
 	}
 
 	.note-input {
 		flex: 1;
 		min-width: 100px;
 		padding: 0.5rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
+		color: #e0e0e0;
 	}
 
 	.update-btn {
 		padding: 0.5rem 1rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
+		font-weight: 600;
 	}
 
 	.cancel-btn {
 		padding: 0.5rem 1rem;
 		background: none;
-		border: 1px solid #ddd;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		cursor: pointer;
+		color: #8899a6;
 	}
 
 	.empty {
 		text-align: center;
-		color: #999;
+		color: #5a6a7a;
 		padding: 2rem;
 	}
 </style>

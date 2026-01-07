@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Configurações - Ontrack</title>
+	<title>Configurações - Rumo</title>
 </svelte:head>
 
 <main>
@@ -82,35 +82,48 @@
 		max-width: 600px;
 		margin: 0 auto;
 		padding: 1rem;
-		font-family: system-ui, -apple-system, sans-serif;
+		padding-top: 4rem;
 	}
 
 	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-bottom: 1.5rem;
+		padding: 1rem;
+		background: rgba(13, 27, 42, 0.85);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		z-index: 100;
+		max-width: 600px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #333;
+		color: #88c0d0;
 	}
 
 	h1 {
 		font-size: 1.25rem;
 		margin: 0;
+		color: #e0e0e0;
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0 0 0.5rem 0;
-		color: #333;
+		color: #e0e0e0;
 	}
 
 	.section {
-		background: #fafafa;
+		background: #1b2838;
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -118,7 +131,7 @@
 
 	.description {
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 		margin: 0 0 1rem 0;
 	}
 
@@ -126,18 +139,20 @@
 		width: 100%;
 		min-height: 100px;
 		padding: 0.75rem;
-		border: 1px solid #ddd;
+		background: #0d1b2a;
+		border: 1px solid #2d4a5e;
 		border-radius: 4px;
 		font-family: inherit;
 		font-size: 1rem;
 		resize: vertical;
 		box-sizing: border-box;
 		margin-bottom: 0.5rem;
+		color: #e0e0e0;
 	}
 
 	textarea:focus {
 		outline: none;
-		border-color: #333;
+		border-color: #88c0d0;
 	}
 
 	.actions {
@@ -148,20 +163,26 @@
 
 	button[type='submit'] {
 		padding: 0.5rem 1rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
+		font-weight: 600;
+	}
+
+	button[type='submit']:hover {
+		background: #9dd0e0;
 	}
 
 	.saved {
-		color: #22c55e;
+		color: #98c379;
 		font-size: 0.875rem;
 	}
 
 	.account-info p {
 		margin: 0 0 0.5rem 0;
+		color: #e0e0e0;
 	}
 
 	.premium-badge {
@@ -174,7 +195,8 @@
 	}
 
 	.free-badge {
-		background: #e5e5e5;
+		background: #2d4a5e;
+		color: #8899a6;
 		padding: 0.125rem 0.5rem;
 		border-radius: 4px;
 		font-size: 0.75rem;
@@ -182,31 +204,38 @@
 
 	.upgrade-info {
 		font-size: 0.875rem;
-		color: #666;
+		color: #8899a6;
 	}
 
 	.upgrade-btn {
 		width: 100%;
 		padding: 0.75rem;
-		background: #333;
-		color: #fff;
+		background: #88c0d0;
+		color: #0d1b2a;
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
 		margin-top: 0.5rem;
+		font-weight: 600;
 	}
 
 	.upgrade-btn:disabled {
-		background: #ccc;
+		background: #2d4a5e;
+		color: #5a6a7a;
 		cursor: not-allowed;
 	}
 
 	.danger {
-		border: 1px solid #fee2e2;
-		background: #fef2f2;
+		border: 1px solid #4a2a2a;
+		background: #2a1a1a;
 	}
 
 	.logout-btn {
-		background: #ef4444;
+		background: #e06c75 !important;
+		color: #fff !important;
+	}
+
+	.logout-btn:hover {
+		background: #c95f67 !important;
 	}
 </style>

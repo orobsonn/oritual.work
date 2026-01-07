@@ -3,11 +3,12 @@
 </script>
 
 <svelte:head>
-	<title>Login - Ontrack</title>
+	<title>Login - Rumo</title>
 </svelte:head>
 
 <main>
-	<h1>Ontrack</h1>
+	<div class="logo-char">ᕙ(⇀‸↼‶)ᕗ</div>
+	<h1>Rumo</h1>
 	<p>Seu ritual diário de produtividade</p>
 
 	<a href="/login/google" class="google-btn">
@@ -22,16 +23,21 @@
 		align-items: center;
 		justify-content: center;
 		min-height: 100vh;
-		font-family: system-ui, -apple-system, sans-serif;
+	}
+
+	.logo-char {
+		font-size: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	h1 {
 		font-size: 2.5rem;
 		margin-bottom: 0.5rem;
+		color: #e0e0e0;
 	}
 
 	p {
-		color: #666;
+		color: #8899a6;
 		margin-bottom: 2rem;
 	}
 
@@ -39,16 +45,18 @@
 		display: inline-flex;
 		align-items: center;
 		padding: 0.75rem 1.5rem;
-		background: #fff;
-		border: 1px solid #ddd;
+		background: #88c0d0;
+		border: none;
 		border-radius: 4px;
 		font-size: 1rem;
-		color: #333;
+		color: #0d1b2a;
 		text-decoration: none;
 		transition: background 0.2s;
+		font-weight: 600;
 	}
 
 	.google-btn:hover {
-		background: #f5f5f5;
+		background: #9dd0e0;
+		text-decoration: none;
 	}
 </style>
