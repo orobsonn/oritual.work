@@ -205,16 +205,15 @@
 					<p>Crie metas e hábitos compartilhados com quem você ama.</p>
 
 					<div class="pricing">
-						<span class="old-price">R$ 47,90</span>
-						<span class="new-price">R$ 27,90</span>
+						<span class="old-price">R$ 47</span>
+						<span class="new-price">R$ 27</span>
 						<span class="discount">-42%</span>
 					</div>
 
 					<p class="once">Pagamento único. Sem mensalidade.</p>
 
-					<form method="POST" action="?/finish" use:enhance>
-						<input type="hidden" name="hasPartner" value="true" />
-						<input type="hidden" name="wantsPremium" value="true" />
+					<form method="POST" action="/api/stripe/checkout">
+						<input type="hidden" name="onboarding" value="true" />
 						<button type="submit" class="primary premium-btn">
 							Quero desbloquear
 						</button>

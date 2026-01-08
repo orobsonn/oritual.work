@@ -62,9 +62,11 @@
 				<p class="upgrade-info">
 					Desbloqueie metas e hábitos de casal com o plano Premium.
 				</p>
-				<button class="upgrade-btn" disabled>
-					Desbloquear Premium (R$ 47) - Em breve
-				</button>
+				<form method="POST" action="/api/stripe/checkout">
+					<button type="submit" class="upgrade-btn">
+						Desbloquear Premium - R$ 47
+					</button>
+				</form>
 			{/if}
 		</div>
 	</section>
@@ -219,10 +221,8 @@
 		font-weight: 600;
 	}
 
-	.upgrade-btn:disabled {
-		background: #2d4a5e;
-		color: #5a6a7a;
-		cursor: not-allowed;
+	.upgrade-btn:hover {
+		background: #9dd0e0;
 	}
 
 	.danger {

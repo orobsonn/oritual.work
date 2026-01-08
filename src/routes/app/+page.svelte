@@ -45,20 +45,15 @@
 			<a href="/app/goals">Metas</a>
 			<a href="/app/habits">Hábitos</a>
 
-			<!-- Área de Casal - visível mas potencialmente bloqueada -->
-			{#if data.isPremium}
-				<a href="/app/couple" class="couple-link">
-					Casal
-					{#if data.hasCouple}
-						<span class="badge connected">Conectado</span>
-					{/if}
-				</a>
-			{:else}
-				<div class="couple-locked">
-					<span class="lock-text">Casal</span>
+			<!-- Área de Casal -->
+			<a href="/app/couple" class="couple-link" class:upgrade={!data.isPremium && !data.hasCouple}>
+				Casal
+				{#if data.hasCouple}
+					<span class="badge connected">Conectado</span>
+				{:else if !data.isPremium}
 					<span class="premium-tag">Premium</span>
-				</div>
-			{/if}
+				{/if}
+			</a>
 
 			<a href="/app/settings">Configurações</a>
 		</div>
@@ -286,19 +281,13 @@
 		border-radius: 10px;
 	}
 
-	.couple-locked {
-		padding: 1rem;
-		background: #1b2838;
-		border: 1px dashed #3d5a6e;
-		border-radius: 4px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		color: #5a6a7a;
+	.couple-link.upgrade {
+		border: 1px dashed #fbbf24;
 	}
 
-	.lock-text {
-		color: #5a6a7a;
+	.couple-link.upgrade:hover {
+		background: #2a2a1a;
+		border-color: #fbbf24;
 	}
 
 	.premium-tag {

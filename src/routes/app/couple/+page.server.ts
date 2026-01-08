@@ -25,10 +25,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 	// Verificar se é premium
 	const user = await locals.db.select().from(users).where(eq(users.id, userId)).get();
 
-	if (user?.isPremium !== 1) {
-		redirect(302, '/app');
-	}
-
 	// Verificar se já tem parceiro
 	const couple = await locals.db
 		.select()
@@ -37,6 +33,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			and(or(eq(couples.userId1, userId), eq(couples.userId2, userId)), isNull(couples.deletedAt))
 		)
 		.get();
+
+	const isPremium = user?.isPremium === 1;
 
 	let partner = null;
 	let goals: typeof coupleGoals.$inferSelect[] = [];
@@ -87,6 +85,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.get();
 
 	return {
+		isPremium,
 		hasCouple: !!couple,
 		partner: partner ? { name: partner.name, email: partner.email } : null,
 		goals,

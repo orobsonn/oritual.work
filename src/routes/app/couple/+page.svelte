@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 
-	let { data } = $props();
+	let { data, form } = $props();
 
 	let showGoalForm = $state(false);
 	let showHabitForm = $state(false);
-	let inviteCode = $state('');
 	let habitFrequencyType = $state<'weekly' | 'monthly'>('monthly');
 	let selectedDays = $state<string[]>([]);
+	let inviteCode = $state('');
 
 	function toggleDay(day: string) {
 		if (selectedDays.includes(day)) {
@@ -58,42 +58,58 @@
 		<section class="connect-section">
 			<h2>Conecte com seu parceiro(a)</h2>
 
-			{#if data.pendingInvite}
-				<div class="invite-code">
-					<p>Compartilhe este código:</p>
-					<strong class="code">{data.pendingInvite.code}</strong>
-					<p class="hint">Válido por 7 dias</p>
-				</div>
+			{#if data.isPremium}
+				<!-- Premium: pode gerar código -->
+				{#if data.pendingInvite}
+					<div class="invite-code">
+						<p>Compartilhe este código com seu parceiro(a):</p>
+						<strong class="code">{data.pendingInvite.code}</strong>
+						<p class="hint">Válido por 7 dias</p>
+					</div>
+				{:else}
+					<p class="description">Gere um código e envie para seu parceiro(a) se conectar.</p>
+					<form method="POST" action="?/generateInvite" use:enhance>
+						<button type="submit" class="generate-btn">Gerar código de convite</button>
+					</form>
+				{/if}
 			{:else}
-				<form method="POST" action="?/generateInvite" use:enhance>
-					<button type="submit" class="generate-btn">Gerar código de convite</button>
-				</form>
-			{/if}
+				<!-- Não premium: pode inserir código ou comprar -->
+				<p class="description">
+					Seu parceiro(a) Premium enviou um código? Insira abaixo para conectar.
+				</p>
 
-			<div class="divider">ou</div>
-
-			<form
-				method="POST"
-				action="?/useInvite"
-				use:enhance={() => {
-					return async ({ result, update }) => {
-						if (result.type === 'success') {
+				<form
+					method="POST"
+					action="?/useInvite"
+					use:enhance={() => {
+						return async ({ result, update }) => {
 							await update();
-						}
-					};
-				}}
-			>
-				<div class="use-invite">
-					<input
-						type="text"
-						name="code"
-						placeholder="Código do parceiro"
-						bind:value={inviteCode}
-						maxlength="6"
-					/>
-					<button type="submit">Conectar</button>
+						};
+					}}
+				>
+					<div class="use-invite">
+						<input
+							type="text"
+							name="code"
+							placeholder="CÓDIGO"
+							bind:value={inviteCode}
+							maxlength="6"
+							style="text-transform: uppercase"
+						/>
+						<button type="submit" disabled={inviteCode.length < 4}>Conectar</button>
+					</div>
+					{#if form?.error}
+						<p class="error">{form.error}</p>
+					{/if}
+				</form>
+
+				<div class="divider">ou</div>
+
+				<div class="upgrade-cta">
+					<p>Quer gerar códigos e convidar seu parceiro(a)?</p>
+					<a href="/app/upgrade" class="upgrade-btn">Seja Premium</a>
 				</div>
-			</form>
+			{/if}
 		</section>
 	{:else}
 		<!-- Tem parceiro -->
@@ -299,8 +315,50 @@
 	}
 
 	.connect-section h2 {
-		margin-bottom: 1.5rem;
+		margin-bottom: 1rem;
 		color: #e0e0e0;
+	}
+
+	.description {
+		color: #8899a6;
+		margin: 0 0 1.5rem 0;
+		font-size: 0.9375rem;
+	}
+
+	.error {
+		color: #e06c75;
+		font-size: 0.875rem;
+		margin: 0.5rem 0 0 0;
+	}
+
+	.upgrade-cta {
+		margin-top: 0.5rem;
+	}
+
+	.upgrade-cta p {
+		color: #8899a6;
+		margin: 0 0 0.75rem 0;
+		font-size: 0.9375rem;
+	}
+
+	.upgrade-btn {
+		display: inline-block;
+		padding: 0.75rem 1.5rem;
+		background: #98c379;
+		color: #0d1b2a;
+		text-decoration: none;
+		border-radius: 4px;
+		font-weight: 600;
+	}
+
+	.upgrade-btn:hover {
+		background: #a8d389;
+	}
+
+	.use-invite button:disabled {
+		background: #2d4a5e;
+		color: #5a6a7a;
+		cursor: not-allowed;
 	}
 
 	.invite-code {

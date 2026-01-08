@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"arctic": "^3.7.0",
-		"drizzle-orm": "^0.45.1"
+		"drizzle-orm": "^0.45.1",
+		"stripe": "^20.1.2"
 	}
 }
