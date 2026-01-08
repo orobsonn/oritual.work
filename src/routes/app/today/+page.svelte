@@ -128,7 +128,7 @@
 							if (!textWithoutBullet) {
 								parentEl.replaceWith(ul);
 							} else {
-								parentEl.after(ul);
+								parentEl.insertAdjacentElement('afterend', ul);
 							}
 						}
 

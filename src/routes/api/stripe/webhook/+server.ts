@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	}
 
 	const stripe = new Stripe(stripeSecretKey, {
-		apiVersion: '2025-05-28.basil'
+		apiVersion: '2025-12-15.clover'
 	});
 
 	const signature = request.headers.get('stripe-signature');

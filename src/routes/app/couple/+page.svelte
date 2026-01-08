@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { onMount, onDestroy } from 'svelte';
 
 	let { data, form } = $props();
 
@@ -8,6 +10,24 @@
 	let habitFrequencyType = $state<'weekly' | 'monthly'>('monthly');
 	let selectedDays = $state<string[]>([]);
 	let inviteCode = $state('');
+	let editingGoal = $state<string | null>(null);
+
+	// Polling para sincronizar dados do casal a cada 30 segundos
+	let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
+	onMount(() => {
+		if (data.hasCouple) {
+			pollingInterval = setInterval(() => {
+				invalidateAll();
+			}, 30000);
+		}
+	});
+
+	onDestroy(() => {
+		if (pollingInterval) {
+			clearInterval(pollingInterval);
+		}
+	});
 
 	function toggleDay(day: string) {
 		if (selectedDays.includes(day)) {
@@ -150,20 +170,64 @@
 			{#if data.goals.length === 0}
 				<p class="empty">Nenhuma meta ainda.</p>
 			{:else}
-				<ul class="goals-list">
-					{#each data.goals as goal}
-						{@const percent = Math.round(((goal.currentValue ?? 0) / goal.targetValue) * 100)}
-						<li>
-							<strong>{goal.title}</strong>
-							<div class="mini-progress">
-								<div class="mini-bar">
-									<div class="mini-fill" style="width: {percent}%"></div>
-								</div>
-								<span>{goal.currentValue ?? 0}/{goal.targetValue}</span>
+				<div class="goals-cards">
+					{#each data.goals as goal (goal.id)}
+						{@const current = goal.currentValue ?? 0}
+						{@const target = goal.targetValue}
+						{@const percent = Math.min(100, Math.round((current / target) * 100))}
+
+						<div class="goal-card">
+							<div class="goal-header">
+								<strong>{goal.title}</strong>
+								<form method="POST" action="?/deleteGoal" use:enhance>
+									<input type="hidden" name="goalId" value={goal.id} />
+									<button type="submit" class="delete-btn" title="Excluir">×</button>
+								</form>
 							</div>
-						</li>
+
+							<div class="progress-container">
+								<div class="progress-bar">
+									<div class="progress-fill" style="width: {percent}%"></div>
+								</div>
+								<span class="progress-text">{current}/{target} ({percent}%)</span>
+							</div>
+
+							{#if editingGoal === goal.id}
+								<form
+									class="update-form"
+									method="POST"
+									action="?/updateGoalProgress"
+									use:enhance={() => {
+										return async ({ update }) => {
+											await update();
+											editingGoal = null;
+										};
+									}}
+								>
+									<input type="hidden" name="goalId" value={goal.id} />
+									<div class="update-row">
+										<input
+											type="number"
+											name="newValue"
+											value={current}
+											min="0"
+											max={target}
+											class="value-input"
+										/>
+										<button type="submit" class="update-btn">Salvar</button>
+										<button type="button" class="cancel-btn" onclick={() => (editingGoal = null)}>
+											Cancelar
+										</button>
+									</div>
+								</form>
+							{:else}
+								<button class="edit-progress-btn" onclick={() => (editingGoal = goal.id)}>
+									Atualizar progresso
+								</button>
+							{/if}
+						</div>
 					{/each}
-				</ul>
+				</div>
 			{/if}
 		</section>
 
@@ -632,41 +696,115 @@
 		margin: 0;
 	}
 
-	.goals-list li {
-		padding: 0.75rem 0;
-		border-bottom: 1px solid #2d4a5e;
+	/* Goal Cards */
+	.goals-cards {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
 	}
 
-	.goals-list li:last-child {
-		border-bottom: none;
+	.goal-card {
+		background: #0d1b2a;
+		padding: 1rem;
+		border-radius: 8px;
 	}
 
-	.goals-list li strong {
+	.goal-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.75rem;
+	}
+
+	.goal-header strong {
+		font-size: 1rem;
 		color: #e0e0e0;
 	}
 
-	.mini-progress {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-top: 0.25rem;
+	.delete-btn {
+		background: none;
+		border: none;
+		font-size: 1.25rem;
+		color: #5a6a7a;
+		cursor: pointer;
 	}
 
-	.mini-bar {
-		flex: 1;
-		height: 4px;
-		background: #0d1b2a;
-		border-radius: 2px;
+	.delete-btn:hover {
+		color: #e06c75;
+	}
+
+	.progress-container {
+		margin-bottom: 0.75rem;
+	}
+
+	.progress-bar {
+		height: 8px;
+		background: #1b2838;
+		border-radius: 4px;
 		overflow: hidden;
+		margin-bottom: 0.25rem;
 	}
 
-	.mini-fill {
+	.progress-fill {
 		height: 100%;
 		background: #88c0d0;
+		transition: width 0.3s ease;
 	}
 
-	.mini-progress span {
-		font-size: 0.75rem;
+	.progress-text {
+		font-size: 0.875rem;
+		color: #8899a6;
+	}
+
+	.edit-progress-btn {
+		width: 100%;
+		padding: 0.5rem;
+		background: none;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		cursor: pointer;
+		color: #8899a6;
+	}
+
+	.edit-progress-btn:hover {
+		background: #1b2838;
+	}
+
+	.update-form {
+		margin-top: 0.5rem;
+	}
+
+	.update-row {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.value-input {
+		width: 80px;
+		padding: 0.5rem;
+		background: #1b2838;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		color: #e0e0e0;
+	}
+
+	.update-btn {
+		padding: 0.5rem 1rem;
+		background: #88c0d0;
+		color: #0d1b2a;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		font-weight: 600;
+	}
+
+	.cancel-btn {
+		padding: 0.5rem 1rem;
+		background: none;
+		border: 1px solid #2d4a5e;
+		border-radius: 4px;
+		cursor: pointer;
 		color: #8899a6;
 	}
 

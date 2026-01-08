@@ -1,13 +1,13 @@
-import { redirect } from '@sveltejs/kit';
 import {
 	users,
 	couples,
 	partnerInvites,
 	coupleGoals,
+	coupleGoalProgressLog,
 	coupleHabits,
 	coupleHabitCompletions
 } from '$lib/server/db/schema';
-import { eq, and, isNull, or, desc } from 'drizzle-orm';
+import { eq, and, isNull, or } from 'drizzle-orm';
 import { generateId } from '$lib/server/auth';
 import { getTodayDateBrazil } from '$lib/server/date-utils';
 import type { PageServerLoad, Actions } from './$types';
@@ -255,6 +255,104 @@ export const actions: Actions = {
 				markedByUserId: userId
 			});
 		}
+
+		return { success: true };
+	},
+
+	// Atualizar progresso de meta de casal
+	updateGoalProgress: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const formData = await request.formData();
+
+		const goalId = formData.get('goalId') as string;
+		const newValue = parseInt(formData.get('newValue') as string);
+		const note = formData.get('note') as string | null;
+
+		// Verificar se usuário faz parte do casal
+		const couple = await locals.db
+			.select()
+			.from(couples)
+			.where(
+				and(
+					or(eq(couples.userId1, userId), eq(couples.userId2, userId)),
+					isNull(couples.deletedAt)
+				)
+			)
+			.get();
+
+		if (!couple) return { error: 'Casal não encontrado' };
+
+		// Buscar meta e verificar que pertence ao casal
+		const goal = await locals.db
+			.select()
+			.from(coupleGoals)
+			.where(
+				and(
+					eq(coupleGoals.id, goalId),
+					eq(coupleGoals.coupleId, couple.id),
+					isNull(coupleGoals.deletedAt)
+				)
+			)
+			.get();
+
+		if (!goal) return { error: 'Meta não encontrada' };
+
+		const previousValue = goal.currentValue ?? 0;
+
+		// Atualizar meta
+		await locals.db
+			.update(coupleGoals)
+			.set({ currentValue: newValue })
+			.where(eq(coupleGoals.id, goalId));
+
+		// Registrar log
+		await locals.db.insert(coupleGoalProgressLog).values({
+			id: generateId(),
+			goalId,
+			userId,
+			previousValue,
+			newValue,
+			note,
+			date: getTodayDateBrazil()
+		});
+
+		return { success: true };
+	},
+
+	// Excluir meta de casal
+	deleteGoal: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const formData = await request.formData();
+		const goalId = formData.get('goalId') as string;
+
+		// Verificar se usuário faz parte do casal
+		const couple = await locals.db
+			.select()
+			.from(couples)
+			.where(
+				and(
+					or(eq(couples.userId1, userId), eq(couples.userId2, userId)),
+					isNull(couples.deletedAt)
+				)
+			)
+			.get();
+
+		if (!couple) return { error: 'Casal não encontrado' };
+
+		// Verificar se a meta pertence ao casal
+		const goal = await locals.db
+			.select()
+			.from(coupleGoals)
+			.where(and(eq(coupleGoals.id, goalId), eq(coupleGoals.coupleId, couple.id)))
+			.get();
+
+		if (!goal) return { error: 'Meta não encontrada' };
+
+		// Soft delete
+		await locals.db
+			.update(coupleGoals)
+			.set({ deletedAt: new Date().toISOString() })
+			.where(eq(coupleGoals.id, goalId));
 
 		return { success: true };
 	}
