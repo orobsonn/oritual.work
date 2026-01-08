@@ -317,6 +317,10 @@
 									{/if}
 								</span>
 							</div>
+							<form method="POST" action="?/deleteHabit" use:enhance>
+								<input type="hidden" name="habitId" value={habit.id} />
+								<button type="submit" class="delete-habit-btn" title="Excluir">×</button>
+							</form>
 						</li>
 					{/each}
 				</ul>
@@ -847,6 +851,19 @@
 	.habit-meta {
 		font-size: 0.75rem;
 		color: #5a6a7a;
+	}
+
+	.delete-habit-btn {
+		background: none;
+		border: none;
+		font-size: 1.25rem;
+		color: #5a6a7a;
+		cursor: pointer;
+		padding: 0 0.25rem;
+	}
+
+	.delete-habit-btn:hover {
+		color: #e06c75;
 	}
 
 	.empty {

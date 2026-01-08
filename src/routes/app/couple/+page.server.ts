@@ -357,5 +357,43 @@ export const actions: Actions = {
 			.where(eq(coupleGoals.id, goalId));
 
 		return { success: true };
+	},
+
+	// Excluir hábito de casal
+	deleteHabit: async ({ request, locals }) => {
+		const userId = locals.user!.id;
+		const formData = await request.formData();
+		const habitId = formData.get('habitId') as string;
+
+		// Verificar se usuário faz parte do casal
+		const couple = await locals.db
+			.select()
+			.from(couples)
+			.where(
+				and(
+					or(eq(couples.userId1, userId), eq(couples.userId2, userId)),
+					isNull(couples.deletedAt)
+				)
+			)
+			.get();
+
+		if (!couple) return { error: 'Casal não encontrado' };
+
+		// Verificar se o hábito pertence ao casal
+		const habit = await locals.db
+			.select()
+			.from(coupleHabits)
+			.where(and(eq(coupleHabits.id, habitId), eq(coupleHabits.coupleId, couple.id)))
+			.get();
+
+		if (!habit) return { error: 'Hábito não encontrado' };
+
+		// Soft delete
+		await locals.db
+			.update(coupleHabits)
+			.set({ deletedAt: new Date().toISOString() })
+			.where(eq(coupleHabits.id, habitId));
+
+		return { success: true };
 	}
 };
