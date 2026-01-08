@@ -8,7 +8,7 @@ import {
 	coupleHabitCompletions
 } from '$lib/server/db/schema';
 import { eq, and, isNull, or } from 'drizzle-orm';
-import { generateId } from '$lib/server/auth';
+import { generateId, requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil } from '$lib/server/date-utils';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -17,7 +17,7 @@ function generateInviteCode(): string {
 }
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const userId = locals.user!.id;
+	const userId = requireAuth(locals);
 
 	// Verificar se é premium
 	const user = await locals.db.select().from(users).where(eq(users.id, userId)).get();
@@ -94,7 +94,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	// Gerar convite
 	generateInvite: async ({ locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 
 		// Verificar se já tem convite ativo
 		const existing = await locals.db
@@ -123,7 +123,7 @@ export const actions: Actions = {
 
 	// Usar convite
 	useInvite: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const code = (formData.get('code') as string).toUpperCase();
 
@@ -162,7 +162,7 @@ export const actions: Actions = {
 
 	// Criar meta de casal
 	createGoal: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 
 		const couple = await locals.db
@@ -194,7 +194,7 @@ export const actions: Actions = {
 
 	// Criar hábito de casal
 	createHabit: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 
 		const couple = await locals.db
@@ -229,7 +229,7 @@ export const actions: Actions = {
 
 	// Toggle hábito de casal
 	toggleHabit: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;
 		const completed = formData.get('completed') === 'true' ? 1 : 0;
@@ -263,7 +263,7 @@ export const actions: Actions = {
 
 	// Atualizar progresso de meta de casal
 	updateGoalProgress: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 
 		const goalId = formData.get('goalId') as string;
@@ -323,7 +323,7 @@ export const actions: Actions = {
 
 	// Excluir meta de casal
 	deleteGoal: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const goalId = formData.get('goalId') as string;
 
@@ -361,7 +361,7 @@ export const actions: Actions = {
 
 	// Toggle ativo/pausado de hábito de casal
 	toggleHabitActive: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;
 		const active = formData.get('active') === 'true' ? 1 : 0;
@@ -399,7 +399,7 @@ export const actions: Actions = {
 
 	// Excluir hábito de casal
 	deleteHabit: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;
 

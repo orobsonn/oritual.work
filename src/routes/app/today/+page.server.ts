@@ -1,6 +1,6 @@
 import { dailyEntries, tasks, habits, habitCompletions, users, couples, coupleHabits, coupleHabitCompletions } from '$lib/server/db/schema';
 import { eq, and, isNull, or, gte, lte } from 'drizzle-orm';
-import { generateId } from '$lib/server/auth';
+import { generateId, requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil, getMonthDateRangeBrazil } from '$lib/server/date-utils';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -205,7 +205,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	// Salvar campos de texto do diário (atualiza só os campos enviados)
 	saveEntry: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const today = getTodayDateBrazil();
 		const formData = await request.formData();
 
@@ -240,7 +240,7 @@ export const actions: Actions = {
 
 	// Adicionar tarefa
 	addTask: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const today = getTodayDateBrazil();
 		const formData = await request.formData();
 
@@ -274,7 +274,7 @@ export const actions: Actions = {
 
 	// Toggle tarefa
 	toggleTask: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const taskId = formData.get('taskId') as string;
 		const completed = formData.get('completed') === 'true' ? 1 : 0;
@@ -305,7 +305,7 @@ export const actions: Actions = {
 
 	// Deletar tarefa
 	deleteTask: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const taskId = formData.get('taskId') as string;
 
@@ -338,7 +338,7 @@ export const actions: Actions = {
 
 	// Toggle hábito (pessoal ou de casal)
 	toggleHabit: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const today = getTodayDateBrazil();
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;

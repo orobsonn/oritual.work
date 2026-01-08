@@ -1,5 +1,14 @@
 import { Google } from 'arctic';
+import { redirect } from '@sveltejs/kit';
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
+
+// Helper para validar sessão nas actions - lança redirect se não autenticado
+export function requireAuth(locals: App.Locals): string {
+	if (!locals.user) {
+		throw redirect(302, '/login');
+	}
+	return locals.user.id;
+}
 
 export function createGoogleClient(origin: string): Google {
 	const redirectUri = `${origin}/login/google/callback`;

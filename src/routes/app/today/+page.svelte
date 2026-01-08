@@ -13,6 +13,36 @@
 	let loadingHabitIds = $state<Set<string>>(new Set());
 	let deletingTaskIds = $state<Set<string>>(new Set());
 
+	// Estado local para controle de tarefas/hábitos completados (sincroniza com servidor)
+	let localTaskCompletions = $state<Record<string, number>>({});
+	let localHabitCompletions = $state<Record<string, boolean>>({});
+
+	// Inicializar estados locais a partir dos dados do servidor
+	$effect(() => {
+		const taskMap: Record<string, number> = {};
+		for (const task of data.tasks) {
+			taskMap[task.id] = task.completed;
+		}
+		localTaskCompletions = taskMap;
+	});
+
+	$effect(() => {
+		const habitMap: Record<string, boolean> = {};
+		for (const habit of data.habits) {
+			habitMap[habit.id] = habit.completedToday;
+		}
+		localHabitCompletions = habitMap;
+	});
+
+	// Helpers para verificar estado de completude
+	function isTaskCompleted(taskId: string): boolean {
+		return (localTaskCompletions[taskId] ?? 0) === 1;
+	}
+
+	function isHabitCompleted(habitId: string): boolean {
+		return localHabitCompletions[habitId] ?? false;
+	}
+
 	// Rich editor state values
 	let gratitudeValue = $state(data.entry.gratitude ?? '');
 	let intentionValue = $state(data.entry.intention ?? '');
@@ -226,7 +256,9 @@
 	// Calcular progresso das tarefas
 	const workTasks = $derived(data.tasks.filter((t) => t.category === 'work'));
 	const personalTasks = $derived(data.tasks.filter((t) => t.category === 'personal'));
-	const completedTasks = $derived(data.tasks.filter((t) => t.completed === 1).length);
+	const completedTasks = $derived(
+		Object.values(localTaskCompletions).filter(c => c === 1).length
+	);
 	const totalTasks = $derived(data.tasks.length);
 	const progressPercent = $derived(totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0);
 
@@ -322,18 +354,29 @@
 
 		<!-- Adicionar tarefa -->
 		<form method="POST" action="?/addTask" use:enhance={() => {
-			return async ({ update }) => {
-				await update();
-				newTaskDescription = '';
-				// Manter foco no input após criar tarefa (setTimeout para mobile)
-				setTimeout(() => {
-					const input = document.getElementById('new-task-input') as HTMLInputElement;
-					if (input) {
-						input.focus();
-						// Scroll para o input ficar visível no mobile
-						input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-					}
-				}, 100);
+			// Guardar referência ao input ANTES do submit
+			const input = document.getElementById('new-task-input') as HTMLInputElement;
+			const description = newTaskDescription;
+			const category = newTaskCategory;
+
+			// Limpar input imediatamente para feedback rápido
+			newTaskDescription = '';
+
+			return async ({ result }) => {
+				if (result.type === 'success' || result.type === 'redirect') {
+					// Recarregar dados para mostrar nova tarefa
+					// Usar invalidateAll para buscar dados atualizados
+					const { invalidateAll } = await import('$app/navigation');
+					await invalidateAll();
+				} else {
+					// Se falhou, restaurar o texto
+					newTaskDescription = description;
+				}
+
+				// Sempre manter foco no input
+				if (input) {
+					input.focus();
+				}
 			};
 		}}>
 			<div class="add-task">
@@ -374,20 +417,28 @@
 				<h3>Trabalho</h3>
 				<ul>
 					{#each workTasks as task (task.id)}
-						{@const isCompleted = task.completed === 1}
+						{@const completed = isTaskCompleted(task.id)}
 						{@const isLoading = loadingTaskIds.has(task.id)}
-						<li class:completed={isCompleted} class:deleting={deletingTaskIds.has(task.id)}>
+						<li class:completed={completed} class:deleting={deletingTaskIds.has(task.id)}>
 							<form method="POST" action="?/toggleTask" use:enhance={() => {
+								const newCompleted = !completed;
 								loadingTaskIds = new Set([...loadingTaskIds, task.id]);
-								return async ({ update }) => {
-									await update({ invalidateAll: false });
+								return async ({ result }) => {
 									loadingTaskIds = new Set([...loadingTaskIds].filter(id => id !== task.id));
+									// Só atualiza se sucesso
+									if (result.type === 'success') {
+										localTaskCompletions = { ...localTaskCompletions, [task.id]: newCompleted ? 1 : 0 };
+									}
 								};
 							}}>
 								<input type="hidden" name="taskId" value={task.id} />
-								<input type="hidden" name="completed" value={isCompleted ? 'false' : 'true'} />
+								<input type="hidden" name="completed" value={completed ? 'false' : 'true'} />
 								<button type="submit" class="checkbox" disabled={isLoading || deletingTaskIds.has(task.id)}>
-									{isCompleted ? '✓' : '○'}
+									{#if isLoading}
+										<span class="spinner"></span>
+									{:else}
+										{completed ? '✓' : '○'}
+									{/if}
 								</button>
 							</form>
 							<span>{task.description}</span>
@@ -415,20 +466,28 @@
 				<h3>Pessoal</h3>
 				<ul>
 					{#each personalTasks as task (task.id)}
-						{@const isCompleted = task.completed === 1}
+						{@const completed = isTaskCompleted(task.id)}
 						{@const isLoading = loadingTaskIds.has(task.id)}
-						<li class:completed={isCompleted} class:deleting={deletingTaskIds.has(task.id)}>
+						<li class:completed={completed} class:deleting={deletingTaskIds.has(task.id)}>
 							<form method="POST" action="?/toggleTask" use:enhance={() => {
+								const newCompleted = !completed;
 								loadingTaskIds = new Set([...loadingTaskIds, task.id]);
-								return async ({ update }) => {
-									await update({ invalidateAll: false });
+								return async ({ result }) => {
 									loadingTaskIds = new Set([...loadingTaskIds].filter(id => id !== task.id));
+									// Só atualiza se sucesso
+									if (result.type === 'success') {
+										localTaskCompletions = { ...localTaskCompletions, [task.id]: newCompleted ? 1 : 0 };
+									}
 								};
 							}}>
 								<input type="hidden" name="taskId" value={task.id} />
-								<input type="hidden" name="completed" value={isCompleted ? 'false' : 'true'} />
+								<input type="hidden" name="completed" value={completed ? 'false' : 'true'} />
 								<button type="submit" class="checkbox" disabled={isLoading || deletingTaskIds.has(task.id)}>
-									{isCompleted ? '✓' : '○'}
+									{#if isLoading}
+										<span class="spinner"></span>
+									{:else}
+										{completed ? '✓' : '○'}
+									{/if}
 								</button>
 							</form>
 							<span>{task.description}</span>
@@ -461,21 +520,29 @@
 			<h2>Hábitos de hoje</h2>
 			<ul class="habits-list">
 				{#each filteredHabits as habit (habit.id)}
-					{@const isCompleted = habit.completedToday}
+					{@const completed = isHabitCompleted(habit.id)}
 					{@const isLoading = loadingHabitIds.has(habit.id)}
-					<li class:completed={isCompleted} class:couple-habit={habit.isCouple}>
+					<li class:completed={completed} class:couple-habit={habit.isCouple}>
 						<form method="POST" action="?/toggleHabit" use:enhance={() => {
+							const newCompleted = !completed;
 							loadingHabitIds = new Set([...loadingHabitIds, habit.id]);
-							return async ({ update }) => {
-								await update({ invalidateAll: false });
+							return async ({ result }) => {
 								loadingHabitIds = new Set([...loadingHabitIds].filter(id => id !== habit.id));
+								// Só atualiza se sucesso
+								if (result.type === 'success') {
+									localHabitCompletions = { ...localHabitCompletions, [habit.id]: newCompleted };
+								}
 							};
 						}}>
 							<input type="hidden" name="habitId" value={habit.id} />
-							<input type="hidden" name="completed" value={isCompleted ? 'false' : 'true'} />
+							<input type="hidden" name="completed" value={completed ? 'false' : 'true'} />
 							<input type="hidden" name="isCouple" value={habit.isCouple ? 'true' : 'false'} />
 							<button type="submit" class="checkbox" disabled={isLoading}>
-								{isCompleted ? '✓' : '○'}
+								{#if isLoading}
+									<span class="spinner"></span>
+								{:else}
+									{completed ? '✓' : '○'}
+								{/if}
 							</button>
 						</form>
 						<span class="habit-title">{habit.title}</span>
@@ -979,8 +1046,8 @@
 		margin-top: 0.5rem;
 	}
 
-	/* Mini spinner for loading states */
-	.mini-spinner {
+	/* Spinner for loading states */
+	.spinner {
 		display: inline-block;
 		width: 14px;
 		height: 14px;

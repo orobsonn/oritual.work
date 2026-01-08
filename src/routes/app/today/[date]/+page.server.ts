@@ -1,5 +1,6 @@
 import { dailyEntries, tasks, habitCompletions, habits, users, couples, coupleHabits, coupleHabitCompletions } from '$lib/server/db/schema';
 import { eq, and, isNull, or } from 'drizzle-orm';
+import { requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil } from '$lib/server/date-utils';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
@@ -17,7 +18,7 @@ function formatDateDisplay(dateStr: string): string {
 }
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	const userId = locals.user!.id;
+	const userId = requireAuth(locals);
 	const today = getTodayDateBrazil();
 	const requestedDate = params.date;
 

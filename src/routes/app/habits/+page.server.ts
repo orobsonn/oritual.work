@@ -1,10 +1,10 @@
 import { habits } from '$lib/server/db/schema';
 import { eq, and, isNull } from 'drizzle-orm';
-import { generateId } from '$lib/server/auth';
+import { generateId, requireAuth } from '$lib/server/auth';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const userId = locals.user!.id;
+	const userId = requireAuth(locals);
 
 	const userHabits = await locals.db
 		.select()
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	create: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 
 		const title = formData.get('title') as string;
@@ -43,7 +43,7 @@ export const actions: Actions = {
 	},
 
 	toggle: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;
 		const active = formData.get('active') === 'true' ? 1 : 0;
@@ -65,7 +65,7 @@ export const actions: Actions = {
 	},
 
 	delete: async ({ request, locals }) => {
-		const userId = locals.user!.id;
+		const userId = requireAuth(locals);
 		const formData = await request.formData();
 		const habitId = formData.get('habitId') as string;
 
