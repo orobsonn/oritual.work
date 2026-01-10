@@ -41,6 +41,7 @@
 		<div class="menu-grid">
 			<a href="/app/goals">Metas</a>
 			<a href="/app/habits">Hábitos</a>
+			<a href="/app/agenda">Agenda</a>
 
 			<!-- Área de Casal -->
 			<a href="/app/couple" class="couple-link" class:upgrade={!data.isPremium && !data.hasCouple}>

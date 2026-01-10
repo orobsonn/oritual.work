@@ -1,13 +1,8 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
 	import { navigating } from '$app/stores';
 
 	let { children } = $props();
 </script>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
 
 {#if $navigating}
 	<div class="loading-overlay">
