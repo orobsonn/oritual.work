@@ -944,6 +944,25 @@
 		margin-bottom: 1rem;
 	}
 
+	@media (max-width: 480px) {
+		.add-task {
+			flex-wrap: wrap;
+		}
+
+		.add-task input[type="text"] {
+			width: 100%;
+			flex: 1 1 100%;
+		}
+
+		.add-task .category-toggle {
+			flex: 1;
+		}
+
+		.add-task .add-btn {
+			flex: 0 0 auto;
+		}
+	}
+
 	.add-task input[type="text"] {
 		flex: 1;
 		padding: 0.75rem;

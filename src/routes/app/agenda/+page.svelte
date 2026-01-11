@@ -13,6 +13,7 @@
 
 	let loadingTaskIds = $state<Set<string>>(new Set());
 	let deletingTaskIds = $state<Set<string>>(new Set());
+	let isSubmitting = $state(false);
 
 	// Estado local para controle de tasks completadas
 	let localTaskCompletions = $state<Record<string, number>>({});
@@ -86,19 +87,18 @@
 	<section class="section add-section">
 		<h2>Nova task agendada</h2>
 		<form method="POST" action="?/addScheduledTask" use:enhance={() => {
-			const description = newTaskDescription;
-			newTaskDescription = '';
-			newTaskNotes = '';
-			newTaskTime = '';
-			newTaskDuration = 60;
-			addToCalendar = false;
+			isSubmitting = true;
 
-			return async ({ result }) => {
-				if (result.type === 'success' || result.type === 'redirect') {
-					const { invalidateAll } = await import('$app/navigation');
-					await invalidateAll();
-				} else {
-					newTaskDescription = description;
+			return async ({ result, update }) => {
+				isSubmitting = false;
+
+				if (result.type === 'success') {
+					newTaskDescription = '';
+					newTaskNotes = '';
+					newTaskTime = '';
+					newTaskDuration = 60;
+					addToCalendar = false;
+					await update();
 				}
 			};
 		}}>
@@ -203,7 +203,9 @@
 				</div>
 			{/if}
 
-			<button type="submit" class="submit-btn">Agendar</button>
+			<button type="submit" class="submit-btn" disabled={isSubmitting}>
+			{isSubmitting ? 'Agendando...' : 'Agendar'}
+		</button>
 		</form>
 	</section>
 
@@ -361,6 +363,12 @@
 		gap: 1rem;
 	}
 
+	@media (max-width: 480px) {
+		.form-row.two-cols {
+			grid-template-columns: 1fr;
+		}
+	}
+
 	.form-field label {
 		display: block;
 		font-size: 0.875rem;
@@ -494,8 +502,13 @@
 		font-weight: 600;
 	}
 
-	.submit-btn:hover {
+	.submit-btn:hover:not(:disabled) {
 		background: #9dd0e0;
+	}
+
+	.submit-btn:disabled {
+		opacity: 0.7;
+		cursor: wait;
 	}
 
 	/* Task list styles */
