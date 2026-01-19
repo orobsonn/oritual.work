@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let { data, form } = $props();
 
@@ -79,6 +80,8 @@
 	<header>
 		<a href="/app" class="back">&larr;</a>
 		<h1>Casal</h1>
+		<div class="header-spacer"></div>
+		<ThemeToggle />
 	</header>
 
 	{#if !data.hasCouple}
@@ -395,10 +398,10 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 1rem;
-		background: rgba(13, 27, 42, 0.85);
+		background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
 		z-index: 100;
 		max-width: 600px;
 		margin: 0 auto;
@@ -408,42 +411,46 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		font-size: 1.25rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
+	}
+
+	.header-spacer {
+		flex: 1;
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0;
-		color: #88c0d0;
+		color: var(--color-couple);
 	}
 
 	/* Connect Section */
 	.connect-section {
 		text-align: center;
 		padding: 2rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 8px;
 	}
 
 	.connect-section h2 {
 		margin-bottom: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.description {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin: 0 0 1.5rem 0;
 		font-size: 0.9375rem;
 	}
 
 	.error {
-		color: #e06c75;
+		color: var(--color-error);
 		font-size: 0.875rem;
 		margin: 0.5rem 0 0 0;
 	}
@@ -453,7 +460,7 @@
 	}
 
 	.upgrade-cta p {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin: 0 0 0.75rem 0;
 		font-size: 0.9375rem;
 	}
@@ -461,20 +468,20 @@
 	.upgrade-btn {
 		display: inline-block;
 		padding: 0.75rem 1.5rem;
-		background: #98c379;
-		color: #0d1b2a;
+		background: var(--color-success);
+		color: var(--color-bg-primary);
 		text-decoration: none;
 		border-radius: 4px;
 		font-weight: 600;
 	}
 
 	.upgrade-btn:hover {
-		background: #a8d389;
+		filter: brightness(1.1);
 	}
 
 	.use-invite button:disabled {
-		background: #2d4a5e;
-		color: #5a6a7a;
+		background: var(--color-border);
+		color: var(--color-text-muted);
 		cursor: not-allowed;
 	}
 
@@ -483,7 +490,7 @@
 	}
 
 	.invite-code p {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.code {
@@ -491,18 +498,18 @@
 		font-size: 2rem;
 		letter-spacing: 0.25em;
 		margin: 0.5rem 0;
-		color: #88c0d0;
+		color: var(--color-couple);
 	}
 
 	.hint {
 		font-size: 0.875rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.generate-btn {
 		padding: 0.75rem 1.5rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -511,12 +518,12 @@
 	}
 
 	.generate-btn:hover {
-		background: #9dd0e0;
+		filter: brightness(1.1);
 	}
 
 	.divider {
 		margin: 1.5rem 0;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-size: 0.875rem;
 	}
 
@@ -528,26 +535,26 @@
 
 	.use-invite input {
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		font-size: 1rem;
 		text-transform: uppercase;
 		width: 120px;
 		text-align: center;
 		letter-spacing: 0.1em;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.use-invite input:focus {
 		outline: none;
-		border-color: #88c0d0;
+		border-color: var(--color-couple);
 	}
 
 	.use-invite button {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -556,8 +563,8 @@
 
 	/* Partner Section */
 	.partner-section {
-		background: #1b3830;
-		border: 1px solid #2d5a4e;
+		background: color-mix(in srgb, var(--color-success) 15%, var(--color-bg-secondary));
+		border: 1px solid color-mix(in srgb, var(--color-success) 30%, var(--color-border));
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1.5rem;
@@ -570,16 +577,16 @@
 	}
 
 	.partner-label {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.partner-info strong {
-		color: #98c379;
+		color: var(--color-success);
 	}
 
 	/* Sections */
 	.section {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -593,8 +600,8 @@
 	}
 
 	.add-btn {
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		width: 28px;
 		height: 28px;
@@ -615,33 +622,33 @@
 		flex: 1;
 		min-width: 150px;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.inline-form input[type='number'] {
 		width: 60px;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.inline-form select {
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.inline-form button {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -658,10 +665,10 @@
 
 	.habit-form input[type='text'] {
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.form-row {
@@ -672,24 +679,24 @@
 
 	.form-row select {
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.form-row input[type='number'] {
 		width: 60px;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.freq-label {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.days-selection {
@@ -698,7 +705,7 @@
 
 	.days-label {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin: 0 0 0.5rem 0;
 	}
 
@@ -710,29 +717,29 @@
 
 	.day-chip {
 		padding: 0.4rem 0.6rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 16px;
 		font-size: 0.8rem;
 		cursor: pointer;
 		transition: all 0.2s;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.day-chip:hover {
-		border-color: #88c0d0;
+		border-color: var(--color-couple);
 	}
 
 	.day-chip.selected {
-		background: #88c0d0;
-		color: #0d1b2a;
-		border-color: #88c0d0;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
+		border-color: var(--color-couple);
 	}
 
 	.habit-form .submit-btn {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -740,7 +747,7 @@
 	}
 
 	.habit-form .submit-btn:hover {
-		background: #9dd0e0;
+		filter: brightness(1.1);
 	}
 
 	ul {
@@ -757,7 +764,7 @@
 	}
 
 	.goal-card {
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 		padding: 1rem;
 		border-radius: 8px;
 	}
@@ -771,19 +778,19 @@
 
 	.goal-header strong {
 		font-size: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.delete-btn {
 		background: none;
 		border: none;
 		font-size: 1.25rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		cursor: pointer;
 	}
 
 	.delete-btn:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.progress-container {
@@ -792,7 +799,7 @@
 
 	.progress-bar {
 		height: 8px;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 4px;
 		overflow: hidden;
 		margin-bottom: 0.25rem;
@@ -800,27 +807,27 @@
 
 	.progress-fill {
 		height: 100%;
-		background: #88c0d0;
+		background: var(--color-couple);
 		transition: width 0.3s ease;
 	}
 
 	.progress-text {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.edit-progress-btn {
 		width: 100%;
 		padding: 0.5rem;
 		background: none;
-		border: 1px solid #2d4a5e;
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		cursor: pointer;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.edit-progress-btn:hover {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 	}
 
 	.update-form {
@@ -836,16 +843,16 @@
 	.value-input {
 		width: 80px;
 		padding: 0.5rem;
-		background: #1b2838;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-secondary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.update-btn {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-couple);
+		color: var(--color-bg-primary);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -855,10 +862,10 @@
 	.cancel-btn {
 		padding: 0.5rem 1rem;
 		background: none;
-		border: 1px solid #2d4a5e;
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		cursor: pointer;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.habits-list li {
@@ -866,7 +873,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 1rem;
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 		border-radius: 8px;
 		margin-bottom: 0.5rem;
 	}
@@ -882,12 +889,12 @@
 	.habit-info strong {
 		display: block;
 		margin-bottom: 0.25rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.habit-meta {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.habit-actions {
@@ -911,27 +918,27 @@
 	}
 
 	.toggle-btn.pause {
-		color: #e8a87c;
+		color: var(--color-warning);
 	}
 
 	.toggle-btn.pause:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.toggle-btn.play {
-		color: #6ab074;
+		color: var(--color-success);
 	}
 
 	.toggle-btn.play:hover {
-		color: #98c379;
+		color: var(--color-success);
 	}
 
 	.delete-btn {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.delete-btn:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.goal-card.loading {
@@ -940,7 +947,7 @@
 	}
 
 	.empty {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-size: 0.875rem;
 		text-align: center;
 		padding: 1rem;

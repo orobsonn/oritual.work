@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+
 	let { data } = $props();
 
 	function formatDate(dateStr: string): string {
@@ -11,10 +13,10 @@
 	}
 
 	function getProgressColor(percent: number): string {
-		if (percent >= 80) return '#22c55e';
-		if (percent >= 50) return '#88c0d0';
-		if (percent >= 25) return '#fbbf24';
-		return '#e06c75';
+		if (percent >= 80) return 'var(--color-success)';
+		if (percent >= 50) return 'var(--color-accent)';
+		if (percent >= 25) return 'var(--color-warning)';
+		return 'var(--color-error)';
 	}
 </script>
 
@@ -25,8 +27,11 @@
 <main>
 	<header>
 		<h1><span class="logo-char">ᕙ(⇀‸↼‶)ᕗ</span> Ritual</h1>
-		<div class="user-info">
-			<span>{data.user.name ?? data.user.email}</span>
+		<div class="header-actions">
+			<ThemeToggle />
+			<div class="user-info">
+				<span>{data.user.name ?? data.user.email}</span>
+			</div>
 		</div>
 	</header>
 
@@ -181,13 +186,13 @@
 		align-items: center;
 		margin-bottom: 2rem;
 		padding-bottom: 1rem;
-		border-bottom: 1px solid #2d4a5e;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	h1 {
 		font-size: 1.5rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -197,8 +202,14 @@
 		font-size: 1rem;
 	}
 
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
 	.user-info span {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.welcome {
@@ -208,11 +219,11 @@
 
 	.welcome h2 {
 		margin-bottom: 0.5rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.welcome p {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.menu {
@@ -223,28 +234,28 @@
 
 	.menu > a {
 		padding: 1rem;
-		background: #1b2838;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-secondary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		text-decoration: none;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		transition: background 0.2s;
 	}
 
 	.menu > a:hover {
-		background: #243447;
+		background: var(--color-bg-tertiary);
 		text-decoration: none;
 	}
 
 	.menu > a.primary {
-		background: #88c0d0;
-		color: #0d1b2a;
-		border-color: #88c0d0;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
+		border-color: var(--color-accent);
 		font-weight: 600;
 	}
 
 	.menu > a.primary:hover {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 	}
 
 	.menu-grid {
@@ -256,16 +267,16 @@
 	.menu-grid a,
 	.menu-grid .couple-locked {
 		padding: 1rem;
-		background: #1b2838;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-secondary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		text-decoration: none;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		transition: background 0.2s;
 	}
 
 	.menu-grid a:hover {
-		background: #243447;
+		background: var(--color-bg-tertiary);
 	}
 
 	.couple-link {
@@ -275,7 +286,7 @@
 	}
 
 	.badge.connected {
-		background: #22c55e;
+		background: var(--color-success);
 		color: #fff;
 		font-size: 0.75rem;
 		padding: 0.125rem 0.5rem;
@@ -283,16 +294,16 @@
 	}
 
 	.couple-link.upgrade {
-		border: 1px dashed #fbbf24;
+		border: 1px dashed var(--color-warning);
 	}
 
 	.couple-link.upgrade:hover {
-		background: #2a2a1a;
-		border-color: #fbbf24;
+		background: rgba(251, 191, 36, 0.1);
+		border-color: var(--color-warning);
 	}
 
 	.premium-tag {
-		background: #fbbf24;
+		background: var(--color-warning);
 		color: #000;
 		font-size: 0.7rem;
 		padding: 0.125rem 0.5rem;
@@ -304,12 +315,12 @@
 	.history {
 		margin-top: 2rem;
 		padding-top: 1rem;
-		border-top: 1px solid #2d4a5e;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.history h3 {
 		font-size: 0.875rem;
-		color: #88c0d0;
+		color: var(--color-accent);
 		margin: 0 0 1rem 0;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -323,7 +334,7 @@
 
 	.history li {
 		padding: 0;
-		border-bottom: 1px solid #1b2838;
+		border-bottom: 1px solid var(--color-bg-secondary);
 	}
 
 	.history li:last-child {
@@ -347,7 +358,7 @@
 
 	.date {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.mini-progress {
@@ -359,37 +370,37 @@
 	.mini-bar {
 		width: 60px;
 		height: 4px;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 2px;
 		overflow: hidden;
 	}
 
 	.mini-fill {
 		height: 100%;
-		background: #88c0d0;
+		background: var(--color-accent);
 	}
 
 	.mini-text {
 		font-size: 0.75rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		width: 35px;
 		text-align: right;
 	}
 
 	.no-tasks {
-		color: #3d5a6e;
+		color: var(--color-text-muted);
 	}
 
 	/* Analytics Section */
 	.analytics {
 		margin-top: 2rem;
 		padding-top: 1rem;
-		border-top: 1px solid #2d4a5e;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.analytics h3 {
 		font-size: 0.875rem;
-		color: #88c0d0;
+		color: var(--color-accent);
 		margin: 0 0 1rem 0;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -403,7 +414,7 @@
 	}
 
 	.stat-card {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		padding: 1rem;
 		border-radius: 8px;
 	}
@@ -417,7 +428,7 @@
 
 	.stat-label {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.stat-value {
@@ -427,7 +438,7 @@
 
 	.stat-bar {
 		height: 8px;
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 		border-radius: 4px;
 		overflow: hidden;
 		margin-bottom: 0.5rem;
@@ -440,7 +451,7 @@
 
 	.stat-detail {
 		font-size: 0.75rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	/* Goals in analytics */
@@ -450,14 +461,14 @@
 
 	.goals-section h4 {
 		font-size: 0.8rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin: 0 0 0.75rem 0;
 		text-transform: uppercase;
 		letter-spacing: 0.03em;
 	}
 
 	.goals-section.couple h4 {
-		color: #e879a9;
+		color: var(--color-couple);
 	}
 
 	.goals-list {
@@ -472,22 +483,22 @@
 		justify-content: space-between;
 		gap: 0.75rem;
 		padding: 0.5rem 0.75rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 6px;
 		text-decoration: none;
 		transition: background 0.2s;
 	}
 
 	.goal-row:hover {
-		background: #243447;
+		background: var(--color-bg-tertiary);
 	}
 
 	.goal-row.couple {
-		border-left: 3px solid #e879a9;
+		border-left: 3px solid var(--color-couple);
 	}
 
 	.goal-name {
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		font-size: 0.875rem;
 		flex: 1;
 		white-space: nowrap;
@@ -505,28 +516,28 @@
 	.goal-bar {
 		width: 80px;
 		height: 6px;
-		background: rgba(45, 74, 94, 0.5);
+		background: color-mix(in srgb, var(--color-border) 50%, transparent);
 		border-radius: 3px;
 		overflow: hidden;
 	}
 
 	.goal-bar.couple {
-		background: rgba(232, 121, 169, 0.2);
+		background: color-mix(in srgb, var(--color-couple) 20%, transparent);
 	}
 
 	.goal-fill {
 		height: 100%;
-		background: #88c0d0;
+		background: var(--color-accent);
 		transition: width 0.3s ease;
 	}
 
 	.goal-fill.couple {
-		background: #e879a9;
+		background: var(--color-couple);
 	}
 
 	.goal-numbers {
 		font-size: 0.75rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		min-width: 50px;
 		text-align: right;
 	}

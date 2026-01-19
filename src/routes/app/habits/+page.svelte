@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let { data } = $props();
 
@@ -34,6 +35,8 @@
 	<header>
 		<a href="/app" class="back">&larr;</a>
 		<h1>Hábitos</h1>
+		<div class="header-spacer"></div>
+		<ThemeToggle />
 		<button class="add-btn" onclick={() => (showForm = !showForm)}>
 			{showForm ? '×' : '+'}
 		</button>
@@ -153,10 +156,10 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 1rem;
-		background: rgba(13, 27, 42, 0.85);
+		background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
 		z-index: 100;
 		max-width: 600px;
 		margin: 0 auto;
@@ -166,19 +169,19 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.add-btn {
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		width: 32px;
 		height: 32px;
@@ -189,7 +192,7 @@
 	}
 
 	.create-form {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -202,7 +205,7 @@
 	.field label {
 		display: block;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 0.25rem;
 	}
 
@@ -211,12 +214,12 @@
 	.field select {
 		width: 100%;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		font-size: 1rem;
 		box-sizing: border-box;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.days-grid {
@@ -236,31 +239,31 @@
 	.day-chip span {
 		display: block;
 		padding: 0.5rem 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 20px;
 		font-size: 0.875rem;
 		transition: all 0.2s;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.day-chip input:checked + span {
-		background: #88c0d0;
-		color: #0d1b2a;
-		border-color: #88c0d0;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
+		border-color: var(--color-accent);
 	}
 
 	.hint {
 		font-size: 0.75rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		margin: 0.25rem 0 0 0;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 0.75rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		border-radius: 4px;
 		font-size: 1rem;
@@ -269,7 +272,7 @@
 	}
 
 	.submit-btn:hover {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 	}
 
 	ul {
@@ -283,7 +286,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 1rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 8px;
 		margin-bottom: 1rem;
 	}
@@ -295,12 +298,12 @@
 	.habit-info strong {
 		display: block;
 		margin-bottom: 0.25rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.meta {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.habit-actions {
@@ -318,38 +321,38 @@
 	}
 
 	.toggle-btn.pause {
-		color: #e8a87c;
+		color: var(--color-warning);
 	}
 
 	.toggle-btn.pause:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.toggle-btn.play {
-		color: #6ab074;
+		color: var(--color-success);
 	}
 
 	.toggle-btn.play:hover {
-		color: #98c379;
+		color: var(--color-success);
 	}
 
 	.delete-btn {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.delete-btn:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.empty {
 		text-align: center;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		padding: 2rem;
 	}
 
 	.description {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		text-align: center;
 		margin: 0 0 1rem 0;
 		line-height: 1.5;

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let { data } = $props();
 
@@ -15,6 +16,8 @@
 	<header>
 		<a href="/app" class="back">&larr;</a>
 		<h1>Metas</h1>
+		<div class="header-spacer"></div>
+		<ThemeToggle />
 		<button class="add-btn" onclick={() => (showForm = !showForm)}>
 			{showForm ? '×' : '+'}
 		</button>
@@ -136,10 +139,10 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 1rem;
-		background: rgba(13, 27, 42, 0.85);
+		background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
 		z-index: 100;
 		max-width: 600px;
 		margin: 0 auto;
@@ -149,19 +152,19 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.add-btn {
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		width: 32px;
 		height: 32px;
@@ -172,7 +175,7 @@
 	}
 
 	.create-form {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -185,19 +188,19 @@
 	.field label {
 		display: block;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 0.25rem;
 	}
 
 	.field input {
 		width: 100%;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		font-size: 1rem;
 		box-sizing: border-box;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.target-input {
@@ -212,21 +215,21 @@
 	}
 
 	.target-hint {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-size: 0.875rem;
 	}
 
 	.hint {
 		font-size: 0.75rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		margin: 0.25rem 0 0 0;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 0.75rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		border-radius: 4px;
 		font-size: 1rem;
@@ -235,11 +238,11 @@
 	}
 
 	.submit-btn:hover {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 	}
 
 	.goal-card {
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		padding: 1rem;
 		border-radius: 8px;
 		margin-bottom: 1rem;
@@ -247,7 +250,7 @@
 
 	.description {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		text-align: center;
 		margin: 0 0 1rem 0;
 		line-height: 1.5;
@@ -262,19 +265,19 @@
 
 	.goal-header strong {
 		font-size: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.delete-btn {
 		background: none;
 		border: none;
 		font-size: 1.25rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		cursor: pointer;
 	}
 
 	.delete-btn:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.progress-container {
@@ -283,7 +286,7 @@
 
 	.progress-bar {
 		height: 8px;
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 		border-radius: 4px;
 		overflow: hidden;
 		margin-bottom: 0.25rem;
@@ -291,27 +294,27 @@
 
 	.progress-fill {
 		height: 100%;
-		background: #88c0d0;
+		background: var(--color-accent);
 		transition: width 0.3s ease;
 	}
 
 	.progress-text {
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.edit-progress-btn {
 		width: 100%;
 		padding: 0.5rem;
 		background: none;
-		border: 1px solid #2d4a5e;
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		cursor: pointer;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.edit-progress-btn:hover {
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 	}
 
 	.update-form {
@@ -327,16 +330,16 @@
 	.value-input {
 		width: 80px;
 		padding: 0.5rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.update-btn {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
@@ -346,15 +349,15 @@
 	.cancel-btn {
 		padding: 0.5rem 1rem;
 		background: none;
-		border: 1px solid #2d4a5e;
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		cursor: pointer;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.empty {
 		text-align: center;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		padding: 2rem;
 	}
 </style>

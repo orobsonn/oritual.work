@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 
 	let { data } = $props();
 
@@ -79,6 +80,8 @@
 	<div class="header-content">
 		<a href="/app" class="back">&larr;</a>
 		<h1>Agenda</h1>
+		<div class="header-spacer"></div>
+		<ThemeToggle />
 	</div>
 </header>
 
@@ -304,10 +307,10 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		background: rgba(13, 27, 42, 0.85);
+		background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
 		z-index: 100;
 	}
 
@@ -323,20 +326,20 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0 0 1rem 0;
-		color: #88c0d0;
+		color: var(--color-accent);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
@@ -344,7 +347,7 @@
 	.section {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 8px;
 	}
 
@@ -372,7 +375,7 @@
 	.form-field label {
 		display: block;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 0.25rem;
 	}
 
@@ -383,11 +386,11 @@
 	select {
 		width: 100%;
 		padding: 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		box-sizing: border-box;
 		font-family: inherit;
 	}
@@ -412,13 +415,13 @@
 	textarea:focus,
 	select:focus {
 		outline: none;
-		border-color: #88c0d0;
+		border-color: var(--color-accent);
 	}
 
-	/* Ícone do calendário e relógio em tema escuro */
+	/* Ícone do calendário e relógio - adapta ao tema */
 	input[type="date"]::-webkit-calendar-picker-indicator,
 	input[type="time"]::-webkit-calendar-picker-indicator {
-		filter: invert(1);
+		filter: var(--input-icon-filter, invert(1));
 		cursor: pointer;
 	}
 
@@ -430,23 +433,23 @@
 	.toggle-btn {
 		flex: 1;
 		padding: 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition: all 0.2s;
 		font-size: 0.875rem;
 	}
 
 	.toggle-btn:hover {
-		background: rgba(136, 192, 208, 0.1);
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 	}
 
 	.toggle-btn.active {
-		background: rgba(136, 192, 208, 0.15);
-		border-color: #88c0d0;
-		color: #e0e0e0;
+		background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+		border-color: var(--color-accent);
+		color: var(--color-text-primary);
 	}
 
 	.calendar-btn {
@@ -455,25 +458,25 @@
 		gap: 0.75rem;
 		width: 100%;
 		padding: 0.875rem 1rem;
-		background: #0d1b2a;
-		border: 1px dashed #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px dashed var(--color-border);
 		border-radius: 6px;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		cursor: pointer;
 		font-size: 0.875rem;
 		transition: all 0.2s;
 	}
 
 	.calendar-btn:hover {
-		border-color: #88c0d0;
-		background: rgba(136, 192, 208, 0.05);
+		border-color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 5%, transparent);
 	}
 
 	.calendar-btn.active {
 		border-style: solid;
-		border-color: #88c0d0;
-		background: rgba(136, 192, 208, 0.1);
-		color: #e0e0e0;
+		border-color: var(--color-accent);
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		color: var(--color-text-primary);
 	}
 
 	.calendar-icon {
@@ -486,15 +489,15 @@
 	}
 
 	.calendar-check {
-		color: #88c0d0;
+		color: var(--color-accent);
 		font-weight: bold;
 	}
 
 	.submit-btn {
 		width: 100%;
 		padding: 0.875rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		border-radius: 6px;
 		cursor: pointer;
@@ -503,7 +506,7 @@
 	}
 
 	.submit-btn:hover:not(:disabled) {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 	}
 
 	.submit-btn:disabled {
@@ -522,7 +525,7 @@
 
 	.date-header {
 		font-size: 0.875rem;
-		color: #88c0d0;
+		color: var(--color-accent);
 		margin: 0 0 0.5rem 0;
 		text-transform: capitalize;
 	}
@@ -538,7 +541,7 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 0.75rem 0;
-		border-bottom: 1px solid #2d4a5e;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	li:last-child {
@@ -547,7 +550,7 @@
 
 	li.completed .task-description {
 		text-decoration: line-through;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	li.deleting {
@@ -562,7 +565,7 @@
 		cursor: pointer;
 		padding: 0;
 		width: 24px;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	.checkbox:disabled {
@@ -578,18 +581,18 @@
 	}
 
 	.task-description {
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.task-notes {
 		font-size: 0.85rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		line-height: 1.4;
 	}
 
 	li.completed .task-notes {
 		text-decoration: line-through;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.task-meta {
@@ -600,11 +603,11 @@
 	}
 
 	.time {
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	.duration {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-weight: 500;
 	}
 
@@ -620,13 +623,13 @@
 		background: none;
 		border: none;
 		font-size: 1.25rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		cursor: pointer;
 		padding: 0;
 	}
 
 	.delete:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.delete:disabled {
@@ -635,7 +638,7 @@
 	}
 
 	.empty {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-size: 0.875rem;
 		text-align: center;
 		padding: 1rem;
@@ -643,19 +646,19 @@
 
 	/* Calendar CTA */
 	.calendar-cta {
-		background: rgba(136, 192, 208, 0.1);
-		border: 1px dashed #88c0d0;
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		border: 1px dashed var(--color-accent);
 	}
 
 	.calendar-cta p {
 		margin: 0;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		text-align: center;
 	}
 
 	.calendar-cta a {
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	/* Spinner */
@@ -663,8 +666,8 @@
 		display: inline-block;
 		width: 14px;
 		height: 14px;
-		border: 2px solid #2d4a5e;
-		border-top-color: #88c0d0;
+		border: 2px solid var(--color-border);
+		border-top-color: var(--color-accent);
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
 	}

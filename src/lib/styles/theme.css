@@ -1,0 +1,158 @@
+/* =============================================================================
+   Theme CSS Variables
+   Light/Dark mode support with system preference detection
+   ============================================================================= */
+
+/* Dark Mode (Default - matches existing app identity) */
+:root {
+	/* Backgrounds */
+	--color-bg-primary: #0d1b2a;
+	--color-bg-secondary: #1b2838;
+	--color-bg-tertiary: #243447;
+	--color-bg-elevated: #1b2838;
+
+	/* Text */
+	--color-text-primary: #e0e0e0;
+	--color-text-secondary: #8899a6;
+	--color-text-muted: #5a6a7a;
+
+	/* Accent - Cyan signature color */
+	--color-accent: #88c0d0;
+	--color-accent-hover: #9dd0e0;
+	--color-accent-text: #0d1b2a;
+
+	/* Border */
+	--color-border: #2d4a5e;
+
+	/* Semantic colors */
+	--color-success: #98c379;
+	--color-warning: #fbbf24;
+	--color-error: #e06c75;
+	--color-couple: #e879a9;
+
+	/* Overlay for modals */
+	--color-overlay: rgba(13, 27, 42, 0.85);
+
+	/* Header backdrop */
+	--color-header-bg: rgba(13, 27, 42, 0.85);
+	--color-header-border: rgba(45, 74, 94, 0.5);
+
+	/* Input filter for date/time pickers */
+	--input-icon-filter: invert(1);
+
+	/* Selection */
+	--color-selection-bg: #88c0d0;
+	--color-selection-text: #0d1b2a;
+}
+
+/* Light Mode */
+[data-theme="light"] {
+	/* Backgrounds */
+	--color-bg-primary: #f5f7fa;
+	--color-bg-secondary: #eef2f6;
+	--color-bg-tertiary: #e4e9ef;
+	--color-bg-elevated: #ffffff;
+
+	/* Text */
+	--color-text-primary: #1a2332;
+	--color-text-secondary: #5a6a7a;
+	--color-text-muted: #8899a6;
+
+	/* Accent - Same cyan signature */
+	--color-accent: #88c0d0;
+	--color-accent-hover: #6aa8b8;
+	--color-accent-text: #ffffff;
+
+	/* Border */
+	--color-border: #d8e0e8;
+
+	/* Semantic colors */
+	--color-success: #22c55e;
+	--color-warning: #f59e0b;
+	--color-error: #e06c75;
+	--color-couple: #e879a9;
+
+	/* Overlay for modals */
+	--color-overlay: rgba(26, 35, 50, 0.5);
+
+	/* Header backdrop */
+	--color-header-bg: rgba(245, 247, 250, 0.85);
+	--color-header-border: rgba(216, 224, 232, 0.8);
+
+	/* Input filter for date/time pickers */
+	--input-icon-filter: none;
+
+	/* Selection */
+	--color-selection-bg: #88c0d0;
+	--color-selection-text: #ffffff;
+}
+
+/* System preference: Dark mode */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) {
+		/* Same as default dark mode */
+		--color-bg-primary: #0d1b2a;
+		--color-bg-secondary: #1b2838;
+		--color-bg-tertiary: #243447;
+		--color-bg-elevated: #1b2838;
+
+		--color-text-primary: #e0e0e0;
+		--color-text-secondary: #8899a6;
+		--color-text-muted: #5a6a7a;
+
+		--color-accent: #88c0d0;
+		--color-accent-hover: #9dd0e0;
+		--color-accent-text: #0d1b2a;
+
+		--color-border: #2d4a5e;
+
+		--color-success: #98c379;
+		--color-warning: #fbbf24;
+		--color-error: #e06c75;
+		--color-couple: #e879a9;
+
+		--color-overlay: rgba(13, 27, 42, 0.85);
+		--color-header-bg: rgba(13, 27, 42, 0.85);
+		--color-header-border: rgba(45, 74, 94, 0.5);
+
+		--input-icon-filter: invert(1);
+
+		--color-selection-bg: #88c0d0;
+		--color-selection-text: #0d1b2a;
+	}
+}
+
+/* System preference: Light mode */
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme]) {
+		/* Same as explicit light mode */
+		--color-bg-primary: #f5f7fa;
+		--color-bg-secondary: #eef2f6;
+		--color-bg-tertiary: #e4e9ef;
+		--color-bg-elevated: #ffffff;
+
+		--color-text-primary: #1a2332;
+		--color-text-secondary: #5a6a7a;
+		--color-text-muted: #8899a6;
+
+		--color-accent: #88c0d0;
+		--color-accent-hover: #6aa8b8;
+		--color-accent-text: #ffffff;
+
+		--color-border: #d8e0e8;
+
+		--color-success: #22c55e;
+		--color-warning: #f59e0b;
+		--color-error: #e06c75;
+		--color-couple: #e879a9;
+
+		--color-overlay: rgba(26, 35, 50, 0.5);
+		--color-header-bg: rgba(245, 247, 250, 0.85);
+		--color-header-border: rgba(216, 224, 232, 0.8);
+
+		--input-icon-filter: none;
+
+		--color-selection-bg: #88c0d0;
+		--color-selection-text: #ffffff;
+	}
+}

@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import AddScheduledTaskForm from '$lib/components/AddScheduledTaskForm.svelte';
 
 	let { data } = $props();
+
+	let showAddTaskModal = $state(false);
 
 	let newTaskDescription = $state('');
 	let newTaskCategory = $state<'work' | 'personal'>('work');
@@ -302,6 +307,15 @@
 				</div>
 			</div>
 		{/if}
+		<ThemeToggle />
+		<button
+			type="button"
+			class="add-scheduled-btn"
+			onclick={() => (showAddTaskModal = true)}
+		>
+			<span class="btn-icon">+</span>
+			<span class="btn-text">Agendar</span>
+		</button>
 	</div>
 </header>
 
@@ -695,6 +709,14 @@
 	</div>
 </main>
 
+<Modal bind:open={showAddTaskModal} title="Agendar tarefa">
+	<AddScheduledTaskForm
+		today={data.today}
+		hasCalendarConnected={data.hasCalendarConnected}
+		onSuccess={() => (showAddTaskModal = false)}
+	/>
+</Modal>
+
 <style>
 	main {
 		max-width: 600px;
@@ -759,10 +781,10 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		background: rgba(13, 27, 42, 0.85);
+		background: var(--color-header-bg);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid var(--color-header-border);
 		z-index: 100;
 	}
 
@@ -792,14 +814,14 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1.25rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.header-progress {
@@ -810,7 +832,7 @@
 
 	.header-progress .progress-text {
 		font-size: 0.875rem;
-		color: #88c0d0;
+		color: var(--color-accent);
 		font-weight: 600;
 	}
 
@@ -824,14 +846,14 @@
 
 	.progress-bar-mini .progress-fill {
 		height: 100%;
-		background: #88c0d0;
+		background: var(--color-accent);
 		transition: width 0.3s ease;
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0 0 1rem 0;
-		color: #88c0d0;
+		color: var(--color-accent);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
@@ -839,13 +861,13 @@
 	h3 {
 		font-size: 0.875rem;
 		margin: 0 0 0.5rem 0;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.section {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 8px;
 	}
 
@@ -862,7 +884,7 @@
 	label {
 		display: block;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 0.25rem;
 	}
 
@@ -870,24 +892,24 @@
 	.rich-editor {
 		min-height: 80px;
 		padding: 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
 		font-family: inherit;
 		font-size: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		line-height: 1.6;
 		box-sizing: border-box;
 	}
 
 	.rich-editor:focus {
 		outline: none;
-		border-color: #88c0d0;
+		border-color: var(--color-accent);
 	}
 
 	.rich-editor:empty::before {
 		content: attr(data-placeholder);
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		pointer-events: none;
 	}
 
@@ -905,7 +927,7 @@
 	}
 
 	.rich-editor :global(li)::marker {
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	.rich-editor :global(div) {
@@ -914,20 +936,20 @@
 
 	/* Affirmation */
 	.affirmation {
-		background: #0d1b2a;
+		background: var(--color-bg-primary);
 		padding: 1rem;
-		border-left: 3px solid #88c0d0;
+		border-left: 3px solid var(--color-accent);
 		margin-top: 1.5rem;
 		margin-bottom: 1rem;
 		font-style: italic;
-		color: #b8c5d0;
+		color: var(--color-text-primary);
 	}
 
 	.affirmation-label {
 		display: block;
 		font-size: 0.75rem;
 		font-style: normal;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		margin-bottom: 0.25rem;
@@ -966,17 +988,17 @@
 	.add-task input[type="text"] {
 		flex: 1;
 		padding: 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 1rem;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.category-toggle {
 		display: flex;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
 		overflow: hidden;
 		flex-shrink: 0;
@@ -1009,8 +1031,8 @@
 
 	.add-btn {
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border: none;
 		border-radius: 6px;
 		cursor: pointer;
@@ -1019,7 +1041,7 @@
 	}
 
 	.add-btn:hover {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 	}
 
 	.task-group {
@@ -1037,7 +1059,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.5rem 0;
-		border-bottom: 1px solid #2d4a5e;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	li:last-child {
@@ -1046,7 +1068,7 @@
 
 	li.completed span {
 		text-decoration: line-through;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.checkbox {
@@ -1056,25 +1078,25 @@
 		cursor: pointer;
 		padding: 0;
 		width: 24px;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	li span {
 		flex: 1;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.delete {
 		background: none;
 		border: none;
 		font-size: 1.25rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		cursor: pointer;
 		padding: 0;
 	}
 
 	.delete:hover {
-		color: #e06c75;
+		color: var(--color-error);
 	}
 
 	.habits-list li {
@@ -1086,12 +1108,12 @@
 
 	.habits-list .habit-title {
 		flex: 1;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.habits-list li.completed .habit-title {
 		text-decoration: line-through;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.habit-badges {
@@ -1106,24 +1128,24 @@
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		background: transparent;
-		border: 1px solid #5a6a7a;
+		border: 1px solid var(--color-text-muted);
 		padding: 0.2rem 0.5rem;
 		border-radius: 4px;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		white-space: nowrap;
 	}
 
 	.badge.couple {
-		border-color: #e879a9;
-		color: #e879a9;
+		border-color: var(--color-couple);
+		color: var(--color-couple);
 	}
 
 	li.couple-habit .checkbox {
-		color: #e879a9;
+		color: var(--color-couple);
 	}
 
 	.empty {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-size: 0.875rem;
 		text-align: center;
 		padding: 1rem;
@@ -1131,7 +1153,7 @@
 
 	.saving-indicator {
 		font-size: 0.75rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		text-align: right;
 		margin-top: 0.5rem;
 	}
@@ -1141,8 +1163,8 @@
 		display: inline-block;
 		width: 14px;
 		height: 14px;
-		border: 2px solid #2d4a5e;
-		border-top-color: #88c0d0;
+		border: 2px solid var(--color-border);
+		border-top-color: var(--color-accent);
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
 	}
@@ -1172,7 +1194,7 @@
 	.scheduled-group {
 		margin-top: 1rem;
 		padding-top: 1rem;
-		border-top: 1px dashed #2d4a5e;
+		border-top: 1px dashed var(--color-border);
 	}
 
 	.scheduled-group h3 {
@@ -1184,7 +1206,7 @@
 	.see-all {
 		font-size: 0.75rem;
 		font-weight: normal;
-		color: #88c0d0;
+		color: var(--color-accent);
 		text-decoration: none;
 	}
 
@@ -1201,15 +1223,48 @@
 
 	.scheduled-task-content span:first-child {
 		flex: 1;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 	}
 
 	.scheduled-time {
 		font-size: 0.75rem;
-		color: #88c0d0;
+		color: var(--color-accent);
 		background: rgba(136, 192, 208, 0.1);
 		padding: 0.125rem 0.5rem;
 		border-radius: 4px;
+	}
+
+	/* Add scheduled task button */
+	.add-scheduled-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 6px 12px;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
+		border: none;
+		border-radius: 6px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 150ms;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.add-scheduled-btn:hover {
+		background: var(--color-accent-hover);
+	}
+
+	.add-scheduled-btn .btn-icon {
+		font-size: 1rem;
+		line-height: 1;
+	}
+
+	@media (max-width: 480px) {
+		.add-scheduled-btn .btn-text {
+			display: none;
+		}
 	}
 
 </style>

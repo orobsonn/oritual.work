@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { navigating } from '$app/stores';
+	import { onMount } from 'svelte';
+	import '$lib/styles/theme.css';
+	import { themeStore } from '$lib/stores/theme.svelte';
 
 	let { children } = $props();
+
+	onMount(() => {
+		themeStore.init();
+	});
 </script>
 
 {#if $navigating}
@@ -20,15 +27,16 @@
 	:global(body) {
 		margin: 0;
 		padding: 0;
-		background-color: #0d1b2a;
-		color: #e0e0e0;
+		background-color: var(--color-bg-primary);
+		color: var(--color-text-primary);
 		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 		line-height: 1.6;
 		min-height: 100vh;
+		transition: background-color 150ms, color 150ms;
 	}
 
 	:global(a) {
-		color: #88c0d0;
+		color: var(--color-accent);
 		text-decoration: none;
 	}
 
@@ -37,8 +45,8 @@
 	}
 
 	:global(::selection) {
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-selection-bg);
+		color: var(--color-selection-text);
 	}
 
 	/* Loading overlay */
@@ -48,7 +56,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: rgba(13, 27, 42, 0.8);
+		background: var(--color-overlay);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -58,8 +66,8 @@
 	.spinner {
 		width: 40px;
 		height: 40px;
-		border: 3px solid #2d4a5e;
-		border-top-color: #88c0d0;
+		border: 3px solid var(--color-border);
+		border-top-color: var(--color-accent);
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 	}

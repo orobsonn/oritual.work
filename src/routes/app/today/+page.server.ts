@@ -1,7 +1,8 @@
-import { dailyEntries, tasks, habits, habitCompletions, users, couples, coupleHabits, coupleHabitCompletions, scheduledTasks } from '$lib/server/db/schema';
+import { dailyEntries, tasks, habits, habitCompletions, users, couples, coupleHabits, coupleHabitCompletions, scheduledTasks, googleCalendarTokens } from '$lib/server/db/schema';
 import { eq, and, isNull, or, gte, lte } from 'drizzle-orm';
 import { generateId, requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil, getMonthDateRangeBrazil } from '$lib/server/date-utils';
+import { createCalendarEvent } from '$lib/server/google-calendar';
 import type { PageServerLoad, Actions } from './$types';
 
 function getDayOfWeekBrazil(): string {
@@ -206,12 +207,22 @@ export const load: PageServerLoad = async ({ locals }) => {
 		)
 		.orderBy(scheduledTasks.scheduledTime);
 
+	// Verificar se o usuário tem Google Calendar conectado
+	const calendarToken = await locals.db
+		.select()
+		.from(googleCalendarTokens)
+		.where(eq(googleCalendarTokens.userId, userId))
+		.get();
+
+	const hasCalendarConnected = !!calendarToken && calendarToken.isEnabled === 1;
+
 	return {
 		entry,
 		tasks: dayTasks,
 		scheduledTasks: todayScheduledTasks,
 		habits: habitsWithStatus,
 		affirmation: user?.affirmation ?? null,
+		hasCalendarConnected,
 		today
 	};
 };
@@ -487,6 +498,53 @@ export const actions: Actions = {
 			.update(scheduledTasks)
 			.set({ deletedAt: new Date().toISOString() })
 			.where(eq(scheduledTasks.id, taskId));
+
+		return { success: true };
+	},
+
+	// Adicionar task agendada
+	addScheduledTask: async ({ request, locals }) => {
+		const userId = requireAuth(locals);
+		const formData = await request.formData();
+
+		const description = formData.get('description') as string;
+		const notes = formData.get('notes') as string | null;
+		const category = formData.get('category') as string;
+		const scheduledDate = formData.get('scheduledDate') as string;
+		const scheduledTime = formData.get('scheduledTime') as string | null;
+		const durationStr = formData.get('duration') as string | null;
+		const duration = durationStr ? parseInt(durationStr, 10) : 60;
+		const addToCalendar = formData.get('addToCalendar') === 'true';
+
+		if (!description || !scheduledDate) {
+			return { error: 'Descrição e data são obrigatórios' };
+		}
+
+		let googleCalendarEventId: string | null = null;
+
+		// Se marcou para adicionar ao Calendar e tem horário, criar evento
+		if (addToCalendar && scheduledTime) {
+			const eventId = await createCalendarEvent(locals.db, userId, {
+				description,
+				notes: notes || undefined,
+				scheduledDate,
+				scheduledTime,
+				duration
+			});
+			googleCalendarEventId = eventId;
+		}
+
+		await locals.db.insert(scheduledTasks).values({
+			id: generateId(),
+			userId,
+			description,
+			notes: notes || null,
+			category: category || 'personal',
+			scheduledDate,
+			scheduledTime: scheduledTime || null,
+			duration,
+			googleCalendarEventId
+		});
 
 		return { success: true };
 	}
