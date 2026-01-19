@@ -1005,7 +1005,7 @@
 	}
 
 	.toggle-btn {
-		padding: 0.5rem 0.6rem;
+		padding: 0.5rem;
 		background: transparent;
 		border: none;
 		cursor: pointer;
