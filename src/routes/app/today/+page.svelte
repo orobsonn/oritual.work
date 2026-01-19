@@ -977,7 +977,7 @@
 		}
 
 		.add-task .category-toggle {
-			flex: 1;
+			flex: 0 0 auto;
 		}
 
 		.add-task .add-btn {
