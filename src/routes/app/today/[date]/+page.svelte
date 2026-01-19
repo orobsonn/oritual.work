@@ -171,10 +171,10 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		background: rgba(13, 27, 42, 0.85);
+		background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(45, 74, 94, 0.5);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
 		z-index: 100;
 	}
 
@@ -190,29 +190,29 @@
 	.back {
 		font-size: 1.5rem;
 		text-decoration: none;
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	h1 {
 		flex: 1;
 		font-size: 1rem;
 		margin: 0;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		text-transform: capitalize;
 	}
 
 	.readonly-badge {
 		font-size: 0.75rem;
 		padding: 0.25rem 0.5rem;
-		background: rgba(136, 192, 208, 0.2);
-		color: #88c0d0;
+		background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+		color: var(--color-accent);
 		border-radius: 4px;
 	}
 
 	h2 {
 		font-size: 1rem;
 		margin: 0 0 1rem 0;
-		color: #88c0d0;
+		color: var(--color-accent);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
@@ -220,13 +220,13 @@
 	h3 {
 		font-size: 0.875rem;
 		margin: 0 0 0.5rem 0;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 	}
 
 	.section {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		background: #1b2838;
+		background: var(--color-bg-secondary);
 		border-radius: 8px;
 	}
 
@@ -241,16 +241,16 @@
 	label {
 		display: block;
 		font-size: 0.875rem;
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 0.5rem;
 	}
 
 	.readonly-content {
 		padding: 0.75rem;
-		background: #0d1b2a;
-		border: 1px solid #2d4a5e;
+		background: var(--color-bg-primary);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
-		color: #e0e0e0;
+		color: var(--color-text-primary);
 		min-height: 60px;
 		font-size: 0.95rem;
 		line-height: 1.5;
@@ -262,13 +262,13 @@
 	}
 
 	.readonly-content .empty {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		font-style: italic;
 	}
 
 	.affirmation {
-		background: linear-gradient(135deg, rgba(136, 192, 208, 0.1), rgba(136, 192, 208, 0.05));
-		border-left: 3px solid #88c0d0;
+		background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		border-left: 3px solid var(--color-accent);
 		padding: 0.75rem 1rem;
 		border-radius: 4px;
 		margin-bottom: 1rem;
@@ -277,7 +277,7 @@
 	.affirmation p {
 		margin: 0;
 		font-style: italic;
-		color: #a0b0c0;
+		color: var(--color-text-secondary);
 	}
 
 	.task-group {
@@ -295,7 +295,8 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 0.5rem 0;
-		border-bottom: 1px solid rgba(45, 74, 94, 0.3);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+		color: var(--color-text-primary);
 	}
 
 	li:last-child {
@@ -304,7 +305,7 @@
 
 	li.completed span:not(.checkbox):not(.badge) {
 		text-decoration: line-through;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	.checkbox {
@@ -314,11 +315,11 @@
 		align-items: center;
 		justify-content: center;
 		font-size: 1rem;
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 	}
 
 	li.completed .checkbox {
-		color: #88c0d0;
+		color: var(--color-accent);
 	}
 
 	.badge {
@@ -329,12 +330,12 @@
 	}
 
 	.badge.couple {
-		background: rgba(152, 195, 121, 0.2);
-		color: #98c379;
+		background: color-mix(in srgb, var(--color-couple) 20%, transparent);
+		color: var(--color-couple);
 	}
 
 	.couple-habit {
-		border-left: 2px solid #98c379;
+		border-left: 2px solid var(--color-couple);
 		padding-left: 0.5rem;
 		margin-left: -0.5rem;
 	}
@@ -345,22 +346,22 @@
 	}
 
 	.empty-day p {
-		color: #8899a6;
+		color: var(--color-text-secondary);
 		margin-bottom: 1rem;
 	}
 
 	.back-link, .today-link {
 		display: inline-block;
 		padding: 0.5rem 1rem;
-		background: #88c0d0;
-		color: #0d1b2a;
+		background: var(--color-accent);
+		color: var(--color-accent-text);
 		border-radius: 6px;
 		text-decoration: none;
 		font-weight: 600;
 	}
 
 	.back-link:hover, .today-link:hover {
-		background: #9dd0e0;
+		background: var(--color-accent-hover);
 		text-decoration: none;
 	}
 
@@ -371,7 +372,7 @@
 	}
 
 	p.empty {
-		color: #5a6a7a;
+		color: var(--color-text-muted);
 		text-align: center;
 		padding: 1rem;
 	}

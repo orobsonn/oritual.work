@@ -18,20 +18,14 @@
 
 				try {
 					const stored = localStorage.getItem(STORAGE_KEY);
+					const theme = (stored === 'light' || stored === 'dark') ? stored : 'dark';
 					const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 
-					if (stored === 'light' || stored === 'dark') {
-						document.documentElement.setAttribute('data-theme', stored);
-						if (metaThemeColor) metaThemeColor.content = THEME_COLORS[stored];
-					} else if (stored === 'system' || !stored) {
-						// Use system preference
-						const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-						const systemTheme = prefersDark ? 'dark' : 'light';
-						// Don't set data-theme for system - let CSS handle it
-						if (metaThemeColor) metaThemeColor.content = THEME_COLORS[systemTheme];
-					}
+					document.documentElement.setAttribute('data-theme', theme);
+					if (metaThemeColor) metaThemeColor.content = THEME_COLORS[theme];
 				} catch (e) {
 					// localStorage not available, use default dark theme
+					document.documentElement.setAttribute('data-theme', 'dark');
 				}
 			})();
 		</script>
