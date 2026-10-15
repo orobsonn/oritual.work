@@ -2,6 +2,7 @@ import { dailyEntries, tasks, habitCompletions, habits, users, couples, coupleHa
 import { eq, and, isNull, or } from 'drizzle-orm';
 import { requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil } from '$lib/server/date-utils';
+import { parseTargetDays } from '$lib/server/target-days';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -75,7 +76,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	// Filtrar hábitos que deveriam aparecer naquele dia
 	const dayPersonalHabits = userHabits.filter((habit) => {
 		if (habit.frequencyType === 'weekly' && habit.targetDays) {
-			const targetDays = JSON.parse(habit.targetDays) as string[];
+			const targetDays = parseTargetDays(habit.targetDays);
 			return targetDays.includes(dayOfWeek);
 		}
 		return habit.frequencyType === 'monthly';
@@ -135,7 +136,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		// Filtrar hábitos de casal daquele dia
 		const dayCoupleHabits = userCoupleHabits.filter((habit) => {
 			if (habit.frequencyType === 'weekly' && habit.targetDays) {
-				const targetDays = JSON.parse(habit.targetDays) as string[];
+				const targetDays = parseTargetDays(habit.targetDays);
 				return targetDays.includes(dayOfWeek);
 			}
 			return habit.frequencyType === 'monthly';
