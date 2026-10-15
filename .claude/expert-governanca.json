@@ -3,10 +3,11 @@
   "instaladoEm": "2026-10-15",
   "testes": {
     "linhaDeBase": {
-      "estado": "sem-testes",
+      "estado": "passando",
       "registradaEm": "2026-10-15",
       "falhas": 0
-    }
+    },
+    "comando": "npm test"
   },
   "repositorioDaMetodologia": "Expert-Integrado-Ferramentas/expert-governanca",
   "mapeamento": {
