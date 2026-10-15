@@ -1,6 +1,6 @@
 import { Google } from 'arctic';
 import { redirect } from '@sveltejs/kit';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
+import { getGoogleCredentials } from '$lib/server/google-credentials';
 
 // Helper para validar sessão nas actions - lança redirect se não autenticado
 export function requireAuth(locals: App.Locals): string {
@@ -12,12 +12,14 @@ export function requireAuth(locals: App.Locals): string {
 
 export function createGoogleClient(origin: string): Google {
 	const redirectUri = `${origin}/login/google/callback`;
-	return new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri);
+	const { clientId, clientSecret } = getGoogleCredentials();
+	return new Google(clientId, clientSecret, redirectUri);
 }
 
 export function createGoogleCalendarClient(origin: string): Google {
 	const redirectUri = `${origin}/app/settings/calendar-callback`;
-	return new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirectUri);
+	const { clientId, clientSecret } = getGoogleCredentials();
+	return new Google(clientId, clientSecret, redirectUri);
 }
 
 // Gera um ID único para sessões e usuários
