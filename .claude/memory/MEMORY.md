@@ -1,0 +1,3 @@
+- [datas-no-fuso-de-brasilia](datas-no-fuso-de-brasilia.md): datas do usuário vêm dos helpers de `date-utils.ts`, não de `new Date()`
+- [exclusao-logica](exclusao-logica.md): linhas não são apagadas; toda consulta filtra `deleted_at`
+- [schema-e-migrations-andam-juntos](schema-e-migrations-andam-juntos.md): mudou o banco, mexa na migration e no `schema.ts`
