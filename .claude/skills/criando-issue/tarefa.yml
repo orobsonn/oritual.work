@@ -1,0 +1,48 @@
+# Modelo de issue de tarefa da Expert. Para quem abre pelo GitHub, copie para .github/ISSUE_TEMPLATE/tarefa.yml do projeto
+# (a skill `criando-issue` escreve o mesmo texto quando a issue nasce pelo Claude).
+name: Tarefa
+description: Uma tarefa pequena, com critérios de aceite que viram teste
+title: "tipo: resumo em uma linha"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Escreva para quem for resolver não precisar perguntar nada. Sem senha, dado pessoal ou nome de cliente.
+        Uma issue é uma coisa só: se dá para entregar em dois pedaços, abra duas.
+  - type: textarea
+    id: resumo
+    attributes:
+      label: Resumo e por quê
+      description: O que é e por que importa (1 a 3 linhas).
+    validations:
+      required: true
+  - type: textarea
+    id: aceite
+    attributes:
+      label: Critérios de aceite
+      description: "Dado X, quando Y, então Z, com valor concreto. Cada um vira um teste. Um por linha, com `- [ ] #ac-N:`."
+      placeholder: "- [ ] #ac-1: dado a API devolvendo companyId 3, quando rodar test_connection, então mostra (id 3)"
+    validations:
+      required: true
+  - type: textarea
+    id: escopo
+    attributes:
+      label: Escopo
+      description: O que pode ser tocado e o que NÃO pode.
+      placeholder: "Pode: src/index.ts e testes. Não tocar: autenticação."
+    validations:
+      required: true
+  - type: dropdown
+    id: sensivel
+    attributes:
+      label: Mexe em área sensível?
+      options: ["não", "segredos", "dado pessoal", "pagamento", "login e permissões", "banco (migration)"]
+    validations:
+      required: true
+  - type: dropdown
+    id: tamanho
+    attributes:
+      label: Tamanho
+      options: ["S (1 a 2 arquivos)", "M", "L"]
+    validations:
+      required: true

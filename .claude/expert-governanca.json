@@ -1,0 +1,15 @@
+{
+  "versao": "0.3.0",
+  "instaladoEm": "2026-10-15",
+  "testes": {
+    "linhaDeBase": {
+      "estado": "sem-testes",
+      "registradaEm": "2026-10-15",
+      "falhas": 0
+    }
+  },
+  "repositorioDaMetodologia": "Expert-Integrado-Ferramentas/expert-governanca",
+  "mapeamento": {
+    "organizadoEm": "2026-10-15"
+  }
+}
