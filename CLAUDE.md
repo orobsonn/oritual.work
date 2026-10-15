@@ -27,7 +27,7 @@ variável de ambiente (`wrangler secret put`), entrada externa validada na borda
 | Checar tipos | `npm run check` |
 | Migrations no D1 local | `wrangler d1 migrations apply ontrack-db --local` |
 | Publicar | `npm run deploy` (skill `publicando`) |
-| Testes | ainda não há suíte (linha de base `sem-testes`) |
+| Testes | `npm test` (node --test em `tests/`; linha de base `passando`) |
 
 ## Pastas
 
