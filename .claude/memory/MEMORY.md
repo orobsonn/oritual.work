@@ -1,4 +1,4 @@
-- [datas-no-fuso-de-brasilia](datas-no-fuso-de-brasilia.md): datas do usuário vêm dos helpers de `date-utils.ts`, não de `new Date()`
+- [datas-no-fuso-de-brasilia](datas-no-fuso-de-brasilia.md): promovido → `.claude/rules/datas-fuso-brasilia.md`
 - [exclusao-logica](exclusao-logica.md): linhas não são apagadas; toda consulta filtra `deleted_at`
 - [schema-e-migrations-andam-juntos](schema-e-migrations-andam-juntos.md): mudou o banco, mexa na migration e no `schema.ts`
 - [testes-sem-dependencia](testes-sem-dependencia.md): teste de módulo puro com `node --test`, sem Vitest
