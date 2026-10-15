@@ -1,6 +1,7 @@
 import { dailyEntries, tasks, users, couples, habits, habitCompletions, personalGoals, coupleGoals, coupleHabits, coupleHabitCompletions } from '$lib/server/db/schema';
 import { eq, desc, and, isNull, or, gte, lte } from 'drizzle-orm';
 import { getWeekDateRangeBrazil, getMonthDateRangeBrazil } from '$lib/server/date-utils';
+import { parseTargetDays } from '$lib/server/target-days';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -138,7 +139,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 		for (const habit of userHabits) {
 			if (habit.frequencyType === 'weekly' && habit.targetDays) {
-				const targetDays = JSON.parse(habit.targetDays) as string[];
+				const targetDays = parseTargetDays(habit.targetDays);
 				// Contar TODOS os dias da semana (não apenas até hoje)
 				weekHabitExpected += targetDays.length;
 				weekHabitCompleted += userWeekCompletions.filter(c => c.habitId === habit.id).length;

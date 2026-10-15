@@ -2,6 +2,7 @@ import { dailyEntries, tasks, habits, habitCompletions, users, couples, coupleHa
 import { eq, and, isNull, or, gte, lte } from 'drizzle-orm';
 import { generateId, requireAuth } from '$lib/server/auth';
 import { getTodayDateBrazil, getMonthDateRangeBrazil } from '$lib/server/date-utils';
+import { parseTargetDays } from '$lib/server/target-days';
 import { createCalendarEvent } from '$lib/server/google-calendar';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -51,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	// Filtrar hábitos pessoais que devem aparecer hoje
 	const todayPersonalHabits = userHabits.filter((habit) => {
 		if (habit.frequencyType === 'weekly' && habit.targetDays) {
-			const targetDays = JSON.parse(habit.targetDays) as string[];
+			const targetDays = parseTargetDays(habit.targetDays);
 			return targetDays.includes(dayOfWeek);
 		}
 		// Hábitos mensais sempre aparecem como lembrete
@@ -134,7 +135,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		// Filtrar hábitos de casal que devem aparecer hoje
 		const todayCoupleHabits = userCoupleHabits.filter((habit) => {
 			if (habit.frequencyType === 'weekly' && habit.targetDays) {
-				const targetDays = JSON.parse(habit.targetDays) as string[];
+				const targetDays = parseTargetDays(habit.targetDays);
 				return targetDays.includes(dayOfWeek);
 			}
 			// Hábitos mensais sempre aparecem como lembrete
